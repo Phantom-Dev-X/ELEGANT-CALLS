@@ -84,7 +84,100 @@
             transform: translateY(-1px);
         }
 
-        .hamburger span { transition: all 0.3s ease; }
+        /* ============================================
+           HAMBURGER BUTTON — 3 lines that become an X
+           ============================================
+           We use absolute positioning on each span
+           so JavaScript can animate them:
+           - Top line rotates +45deg
+           - Middle line fades out
+           - Bottom line rotates -45deg
+           ============================================ */
+        .hamburger {
+            position: relative;
+            width: 24px;   /* w-6 = 24px */
+            height: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger span {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #C9A84C; /* gold */
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Default positions for the 3 bars */
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger span:nth-child(3) { bottom: 0; }
+
+        /* --- When .open: transform into an X --- */
+        .hamburger.open span:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;  /* middle bar disappears */
+        }
+        .hamburger.open span:nth-child(3) {
+            bottom: auto;
+            top: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+
+        /* ============================================
+           MOBILE MENU — slides down below the navbar
+           ============================================
+           Uses transform: translateY(-100%) to hide
+           and translateY(0) + .open to reveal.
+           The menu is fixed at top: 60px (below nav).
+           ============================================ */
+        #mobile-menu {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none; /* can't click when hidden */
+        }
+
+        #mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto; /* clickable when visible */
+        }
+
+        /* Nav links slide right on hover */
+        .mobile-menu-link {
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-menu-link:hover {
+            padding-left: 8px;
+        }
+
+        /* ============================================
+           MENU OVERLAY — dark backdrop behind the menu
+           ============================================
+           Covers entire screen, dims the content,
+           and lets user click to close the menu.
+           ============================================ */
+        #menu-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #menu-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         .hero-badge-text {
             font-size: clamp(8px, 2.2vw, 12px);
@@ -196,10 +289,11 @@
         <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
             <div class="flex items-center justify-between px-5 py-4">
 
-                <button class="hamburger flex flex-col justify-between w-6 h-[15px]">
-                    <span class="block w-full h-[2px] rounded bg-gold"></span>
-                    <span class="block w-full h-[2px] rounded bg-gold"></span>
-                    <span class="block w-full h-[2px] rounded bg-gold"></span>
+                <!-- Hamburger: 3 spans use absolute positioning so we can animate them into an X -->
+                <button id="hamburger" class="hamburger" aria-label="Open menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
 
                 <h1 class="font-playfair text-xl font-bold gold-gradient-text tracking-[3px]">
@@ -212,6 +306,33 @@
 
             </div>
         </nav>
+
+        <!-- ============================================ -->
+        <!-- MOBILE MENU (dropdown)                       -->
+        <!-- Slides down when hamburger is clicked        -->
+        <!-- ============================================ -->
+        <div id="mobile-menu" class="fixed top-[60px] left-0 right-0 bg-black-shine/98 backdrop-blur-xl border-b border-gold/20 z-40">
+            <div class="px-6 py-6 flex flex-col">
+                <!-- Each link has .mobile-menu-link so JS can close menu on click -->
+                <a href="#" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Home</a>
+                <a href="#services" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Services</a>
+                <a href="#packages" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Packages</a>
+                <a href="#pastries" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Pastries</a>
+                <a href="#accessories" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Accessories</a>
+                <a href="#about" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">About Us</a>
+                <a href="#contact" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5">Contact</a>
+                <!-- Book Now button inside the menu -->
+                <button class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3 rounded mt-5 text-[clamp(11px,2.5vw,13px)] transition-all">
+                    Book Now
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MENU OVERLAY — dark backdrop                 -->
+        <!-- Click it to close the mobile menu            -->
+        <!-- ============================================ -->
+        <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-30"></div>
 
         <div class="h-[60px]"></div>
 
@@ -529,6 +650,63 @@
     <!-- STAR RATING + FORM SUBMIT JS                 -->
     <!-- ============================================ -->
     <script>
+        // ============================================
+        // HAMBURGER MENU — JavaScript approach
+        // ============================================
+        // Why JS and not the CSS checkbox hack?
+        //   → "click button → thing happens" is more intuitive
+        //   → Easier to add logic like preventing body scroll
+        //   → Better for screen readers (aria-label)
+        //
+        // Key concepts used:
+        //   classList.toggle('open') — adds class if missing, removes if present
+        //   classList.remove('open') — always removes, even if already gone
+        //   element.style.overflow   — controls CSS overflow property from JS
+        // ============================================
+
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        // --- Helper: close the menu and restore scrolling ---
+        function closeMenu() {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            menuOverlay.classList.remove('open');
+            document.body.style.overflow = ''; // restore scroll
+        }
+
+        // --- Helper: open the menu and lock scrolling ---
+        function openMenu() {
+            hamburger.classList.add('open');
+            mobileMenu.classList.add('open');
+            menuOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden'; // prevent scrolling behind menu
+        }
+
+        // 1️⃣ Toggle menu when hamburger is clicked
+        hamburger.addEventListener('click', () => {
+            // If menu is already open, close it. Otherwise, open it.
+            if (mobileMenu.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // 2️⃣ Close menu when any nav link is clicked
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        // 3️⃣ Close menu when the dark overlay is clicked
+        menuOverlay.addEventListener('click', () => {
+            closeMenu();
+        });
+
         // --- Star rating interaction ---
         const starBtns = document.querySelectorAll('.star-btn');
         let currentRating = 0;
