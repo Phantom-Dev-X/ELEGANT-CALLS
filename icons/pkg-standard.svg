@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <circle cx="60" cy="60" r="55" fill="#1A1A1A" stroke="#C9A84C" stroke-width="1.5"/>
+  <!-- Star -->
+  <polygon points="60,25 67,47 90,47 71,60 78,82 60,69 42,82 49,60 30,47 53,47" fill="#C9A84C" opacity="0.8"/>
+  <!-- Inner star glow -->
+  <polygon points="60,35 64,47 75,47 66,55 69,67 60,60 51,67 54,55 45,47 56,47" fill="#E8D48B" opacity="0.5"/>
+</svg>

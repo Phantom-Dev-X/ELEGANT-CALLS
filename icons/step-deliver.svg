@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Delivery icon - truck with package -->
+  <circle cx="60" cy="60" r="55" fill="#1A1A1A" stroke="#C9A84C" stroke-width="1"/>
+  <!-- Truck body -->
+  <rect x="22" y="48" width="48" height="28" rx="3" fill="none" stroke="#C9A84C" stroke-width="2.5"/>
+  <!-- Truck cabin -->
+  <path d="M70 56 L70 76 L88 76 L88 62 L80 56 Z" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Cabin window -->
+  <path d="M72 58 L72 64 L80 64 L78 58 Z" fill="#C9A84C" opacity="0.4"/>
+  <!-- Package on truck -->
+  <rect x="30" y="52" width="16" height="16" rx="1" fill="#C9A84C" opacity="0.3" stroke="#C9A84C" stroke-width="1.5"/>
+  <line x1="38" y1="52" x2="38" y2="68" stroke="#C9A84C" stroke-width="1"/>
+  <line x1="30" y1="60" x2="46" y2="60" stroke="#C9A84C" stroke-width="1"/>
+  <!-- Wheels -->
+  <circle cx="38" cy="80" r="5" fill="none" stroke="#C9A84C" stroke-width="2"/>
+  <circle cx="38" cy="80" r="2" fill="#C9A84C"/>
+  <circle cx="80" cy="80" r="5" fill="none" stroke="#C9A84C" stroke-width="2"/>
+  <circle cx="80" cy="80" r="2" fill="#C9A84C"/>
+  <!-- Ground line -->
+  <line x1="20" y1="85" x2="95" y2="85" stroke="#C9A84C" stroke-width="1" opacity="0.3"/>
+</svg>

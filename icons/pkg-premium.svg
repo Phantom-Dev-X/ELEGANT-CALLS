@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <circle cx="60" cy="60" r="55" fill="#1A1A1A" stroke="#C9A84C" stroke-width="1.5"/>
+  <!-- Crown -->
+  <path d="M32 72 L32 48 L44 58 L56 42 L60 38 L64 42 L76 58 L88 48 L88 72 Z" fill="#C9A84C" opacity="0.8" stroke="#E8D48B" stroke-width="1"/>
+  <!-- Crown band -->
+  <rect x="32" y="70" width="56" height="8" rx="2" fill="#C9A84C" stroke="#E8D48B" stroke-width="1"/>
+  <!-- Jewels -->
+  <circle cx="46" cy="74" r="3" fill="#E8D48B"/>
+  <circle cx="60" cy="74" r="3" fill="#E8D48B"/>
+  <circle cx="74" cy="74" r="3" fill="#E8D48B"/>
+  <!-- Top jewels -->
+  <circle cx="32" cy="48" r="2.5" fill="#E8D48B"/>
+  <circle cx="60" cy="38" r="2.5" fill="#E8D48B"/>
+  <circle cx="88" cy="48" r="2.5" fill="#E8D48B"/>
+</svg>

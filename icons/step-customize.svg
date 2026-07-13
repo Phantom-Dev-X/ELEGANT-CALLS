@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Customize icon - palette/plus sparkles -->
+  <circle cx="60" cy="60" r="55" fill="#1A1A1A" stroke="#C9A84C" stroke-width="1"/>
+  <!-- Sparkle 1 -->
+  <path d="M45 35 L48 42 L55 45 L48 48 L45 55 L42 48 L35 45 L42 42 Z" fill="#C9A84C"/>
+  <!-- Sparkle 2 -->
+  <path d="M72 28 L74 33 L79 35 L74 37 L72 42 L70 37 L65 35 L70 33 Z" fill="#E8D48B"/>
+  <!-- Sparkle 3 -->
+  <path d="M60 55 L63 62 L70 65 L63 68 L60 75 L57 68 L50 65 L57 62 Z" fill="#C9A84C"/>
+  <!-- Plus sign -->
+  <rect x="67" y="60" width="18" height="4" rx="2" fill="#C9A84C"/>
+  <rect x="74" y="53" width="4" height="18" rx="2" fill="#C9A84C"/>
+  <!-- Small dots -->
+  <circle cx="38" cy="72" r="3" fill="#E8D48B" opacity="0.6"/>
+  <circle cx="80" cy="78" r="2" fill="#C9A84C" opacity="0.4"/>
+</svg>
