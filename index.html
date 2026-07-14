@@ -266,6 +266,35 @@
             min-width: 100%;
         }
 
+        /* ============================================
+           BREAKPOINT: 440px — Big phone / Small tablet
+           ============================================
+           Small tweaks: slightly bigger text, wider
+           padding, hero buttons side by side.
+           ============================================ */
+        @media (min-width: 440px) {
+
+            /* Hero: buttons go side by side instead of stacked */
+            .hero-buttons {
+                flex-direction: row;
+            }
+
+            /* How It Works: gap between steps grows */
+            .steps-inner {
+                gap: clamp(16px, 5vw, 40px);
+            }
+
+            /* Step card text gets a bit more breathing room */
+            .step-card p {
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+
+            /* Service cards: image and title get more gap */
+            /* (the clamp already handles this, but let's
+               give the price a bit more top margin) */
+        }
+
         /* --- Featured Services: "Call" text hidden on tablet & above --- */
         .hide-on-tablet {
             display: inline;
@@ -366,8 +395,8 @@
                     Book personalized luxury calls, curated gift packages, pastries &amp; accessories — delivered with elegance across Nigeria.
                 </p>
 
-                <!-- Buttons -->
-                <div class="flex flex-col gap-3 mt-8 w-full px-4">
+                <!-- Buttons — stacked on small phone, side by side at 440px+ -->
+                <div class="hero-buttons flex flex-col gap-3 mt-8 w-full px-4">
                     <button class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-4 rounded hero-btn-text transition-all">
                         Book Now
                     </button>
