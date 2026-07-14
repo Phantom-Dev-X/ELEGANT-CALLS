@@ -59,9 +59,9 @@
             OUR 3 BREAKPOINTS — MOBILE FIRST
             ============================================
             Base CSS       = 0 - 439px    (small phone)
-            @media 440px   = 440px+       (big phone / small tablet)
-            @media 768px   = 768px+       (tablet)
-            @media 1024px  = 1024px+      (laptop and above)
+            @media 440px   = 440px+       (big phone)
+            @media 768px   = 768px+       (tablet — two columns start)
+            @media 1024px  = 1024px+      (desktop)
             ============================================
         */
 
@@ -110,7 +110,6 @@
         .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
         .hamburger span:nth-child(3) { bottom: 0; }
 
-        /* When .open: transform into an X */
         .hamburger.open span:nth-child(1) {
             top: 50%;
             transform: translateY(-50%) rotate(45deg);
@@ -216,9 +215,19 @@
         /* ============================================
            ABOUT PAGE — Custom styles
            ============================================
-           Mobile-first: single column, centered.
-           768px+: two columns — story left, stats right.
-           1024px+: bigger text, wider stats column.
+           MOBILE (0-767px):
+             - Single column, centered text
+             - NO image
+             - Stats in a row of 3
+           
+           TABLET (768px+):
+             - Two columns: text left, image right
+             - Image with gold frame behind
+             - Stats in a row of 3 below the story
+           
+           DESKTOP (1024px+):
+             - Wider columns, bigger text
+             - Bigger image, more spacing
            ============================================ */
 
         /* --- About badge text --- */
@@ -233,12 +242,22 @@
             line-height: 1.15;
         }
 
-        /* --- Tagline (reused from homepage style) --- */
+        /* --- Tagline --- */
         .tagline-text {
             font-size: clamp(13px, 3vw, 22px);
         }
+        /* Tagline wrapper: wider than hero because
+           "Where Every Call Becomes a Memory" is longer
+           than "Where Elegance Meets Emotion" */
         .tagline-wrapper {
-            max-width: clamp(220px, 60vw, 500px);
+            max-width: clamp(260px, 80vw, 600px);
+        }
+
+        /* --- Short description under tagline --- */
+        .about-description {
+            font-size: clamp(14px, 3.2vw, 16px);
+            line-height: 1.8;
+            color: #B8B8B8;
         }
 
         /* --- Gold diamond divider: — ◆ — --- */
@@ -264,6 +283,11 @@
             line-height: 1;
         }
 
+        /* --- "Our Story" subheading --- */
+        .about-subheading {
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
         /* --- Our Story body text --- */
         .about-story-text {
             font-size: clamp(14px, 3.2vw, 16px);
@@ -271,12 +295,7 @@
             color: #B8B8B8;
         }
 
-        /* --- "Our Story" subheading --- */
-        .about-subheading {
-            font-size: clamp(18px, 4vw, 24px);
-        }
-
-        /* --- Stat cards in a row on mobile --- */
+        /* --- Stat cards in a row --- */
         .about-stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -315,74 +334,117 @@
         }
 
         /* ============================================
-           ABOUT — 440px breakpoint (big phone)
+           ABOUT IMAGE — Gold frame effect (DESKTOP ONLY)
+           ============================================
+           The image is wrapped in a container.
+           Behind the image, a gold-bordered "frame"
+           is offset 10px down-right so it peeks out,
+           creating a premium double-frame look.
+           
+           On mobile the entire image section is HIDDEN.
+           ============================================ */
+
+        /* Image section: hidden on mobile, shown on desktop */
+        .about-image-col {
+            display: none;    /* hidden on mobile */
+        }
+
+        .about-image-wrapper {
+            position: relative;
+            /* The wrapper is slightly bigger than the image
+               to show the gold frame peeking out */
+        }
+
+        /* The gold frame behind the image */
+        .about-image-frame {
+            position: absolute;
+            top: 10px;       /* offset down 10px */
+            left: 10px;      /* offset right 10px */
+            right: -10px;    /* stretch to be 10px wider */
+            bottom: -10px;   /* stretch to be 10px taller */
+            border: 2px solid #C9A84C;   /* gold border */
+            border-radius: 12px;
+            z-index: 0;      /* behind the image */
+        }
+
+        /* The image itself sits in front of the frame */
+        .about-image-wrapper img {
+            position: relative;
+            z-index: 1;      /* in front of the gold frame */
+            border-radius: 12px;
+            border: 1px solid #2A2A2A;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* ============================================
+           BREAKPOINT: 440px — Big phone
            ============================================ */
         @media (min-width: 440px) {
-            /* Stat cards get a bit more room */
             .about-stats-row {
                 gap: 16px;
             }
         }
 
         /* ============================================
-           ABOUT — 768px breakpoint (tablet / desktop)
+           BREAKPOINT: 768px — Tablet
            ============================================
-           Two-column layout: story on left, stats on right.
-           Stats stack vertically instead of in a row.
+           Two-column layout kicks in:
+           - Left: text content (badge, heading, story)
+           - Right: image with gold frame
+           Stats stay in a row of 3 below the story.
            ============================================ */
         @media (min-width: 768px) {
-            .about-layout {
+            .about-hero-layout {
                 flex-direction: row;
                 text-align: left;
                 align-items: flex-start;
                 gap: clamp(32px, 5vw, 60px);
             }
 
-            .about-story-col {
+            .about-text-col {
                 flex: 1;
             }
 
-            .about-stats-col {
+            /* Show image on desktop */
+            .about-image-col {
+                display: block;
                 flex: 0 0 auto;
-                width: 220px;
+                width: clamp(200px, 35vw, 380px);
             }
 
-            /* Stats stack vertically on desktop */
-            .about-stats-row {
-                grid-template-columns: 1fr;
-                gap: 16px;
+            /* Tagline aligns left on desktop */
+            .about-tagline-wrapper {
+                justify-content: flex-start;
             }
 
-            /* Desktop stat card: left-aligned with gold left border */
-            .about-stat-card {
-                text-align: left;
-                border-left: 3px solid #C9A84C;
-                padding: 16px 20px;
-                display: flex;
-                flex-direction: column;
-                gap: 2px;
-            }
-
+            /* Bigger heading */
             .about-heading {
                 font-size: clamp(36px, 5vw, 48px);
             }
 
+            /* Wider divider */
             .about-divider {
                 width: 180px;
             }
 
-            /* Tagline lines align left on desktop */
-            .about-tagline-wrapper {
-                justify-content: flex-start;
+            /* Stats stay in a row but get more padding */
+            .about-stat-card {
+                padding: clamp(16px, 2vw, 24px) clamp(12px, 2vw, 20px);
+            }
+
+            .about-stat-number {
+                font-size: clamp(24px, 3vw, 28px);
             }
         }
 
         /* ============================================
-           ABOUT — 1024px breakpoint (big desktop)
+           BREAKPOINT: 1024px — Desktop
            ============================================ */
         @media (min-width: 1024px) {
-            .about-stats-col {
-                width: 260px;
+            .about-image-col {
+                width: clamp(320px, 35vw, 420px);
             }
 
             .about-stat-number {
@@ -392,6 +454,10 @@
             .about-stat-label {
                 font-size: 12px;
                 letter-spacing: 1px;
+            }
+
+            .about-stat-card {
+                padding: 24px 20px;
             }
         }
     </style>
@@ -404,7 +470,7 @@
     <!-- ============================================ -->
     <div>
 
-        <!-- NAVBAR — same as index.html but links point to index.html -->
+        <!-- NAVBAR — same design as index.html -->
         <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
             <div class="flex items-center justify-between px-4 py-4 max-w-[1100px] mx-auto w-full">
 
@@ -413,18 +479,19 @@
                     ÉLÉGANT
                 </a>
 
-                <!-- Desktop nav links: hidden on mobile, shown at 768px+ -->
+                <!-- Desktop nav links -->
                 <div class="desktop-nav">
                     <a href="index.html" class="desktop-link">Home</a>
                     <a href="index.html#services" class="desktop-link">Services</a>
                     <a href="index.html#packages" class="desktop-link">Packages</a>
                     <a href="index.html#pastries" class="desktop-link">Pastries</a>
                     <a href="index.html#accessories" class="desktop-link">Accessories</a>
+                    <!-- "About" is gold because we're on this page -->
                     <a href="about.html" class="desktop-link text-gold">About</a>
                     <a href="index.html#contact" class="desktop-link">Contact</a>
                 </div>
 
-                <!-- Right side: hamburger (mobile) + Book Now button -->
+                <!-- Right side: hamburger (mobile) + Book Now -->
                 <div class="flex items-center gap-4">
                     <button id="hamburger" class="hamburger" aria-label="Open menu">
                         <span></span>
@@ -450,9 +517,9 @@
                 <a href="index.html#packages" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Packages</a>
                 <a href="index.html#pastries" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Pastries</a>
                 <a href="index.html#accessories" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Accessories</a>
+                <!-- "About Us" is gold because we're on this page -->
                 <a href="about.html" class="mobile-menu-link text-gold font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">About Us</a>
                 <a href="index.html#contact" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5">Contact</a>
-                <!-- Book Now button inside the menu -->
                 <a href="index.html#booking" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3 rounded mt-5 text-[clamp(11px,2.5vw,13px)] transition-all text-center block">
                     Book Now
                 </a>
@@ -468,88 +535,116 @@
         <div class="h-[60px]"></div>
 
         <!-- ============================================ -->
-        <!-- ABOUT US CONTENT                              -->
+        <!-- ABOUT US — TOP SECTION                        -->
+        <!-- Mobile: single column, centered, NO image     -->
+        <!-- Desktop: two columns — text left, image right  -->
         <!-- ============================================ -->
-        <section class="flex justify-center px-5 pt-10 md:pt-20 lg:pt-28 pb-8">
-            <div class="flex flex-col items-center text-center md:max-w-[700px] lg:max-w-[1100px] w-full about-layout">
+        <section class="flex justify-center px-5 pt-10 md:pt-20 lg:pt-28">
+            <div class="flex flex-col items-center text-center md:max-w-[700px] lg:max-w-[1100px] w-full about-hero-layout">
 
-                <!-- Badge: "WHO WE ARE" -->
-                <div class="border border-gold/40 bg-gold/[0.05] rounded-full py-2 px-4 md:py-2.5 md:px-6 inline-block">
-                    <p class="text-gold font-semibold uppercase about-badge-text">
-                        ✦ Who We Are
+                <!-- LEFT COLUMN: Text content -->
+                <div class="about-text-col">
+
+                    <!-- Badge: "WHO WE ARE" -->
+                    <div class="border border-gold/40 bg-gold/[0.05] rounded-full py-2 px-4 md:py-2.5 md:px-6 inline-block">
+                        <p class="text-gold font-semibold uppercase about-badge-text">
+                            ✦ Who We Are
+                        </p>
+                    </div>
+
+                    <!-- Heading: "About" + gold "Élégant" -->
+                    <h2 class="font-playfair font-bold mt-5 about-heading">
+                        About <span class="gold-gradient-text">Élégant</span>
+                    </h2>
+
+                    <!-- Italic gold tagline -->
+                    <div class="flex items-center justify-center gap-3 mt-3 tagline-wrapper whitespace-nowrap about-tagline-wrapper">
+                        <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                        <p class="font-cormorant italic text-gold-light tracking-[2px] text-center tagline-text">
+                            Where Every Call Becomes a Memory
+                        </p>
+                        <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                    </div>
+
+                    <!-- Short description -->
+                    <p class="about-description mt-5">
+                        Luxury surprise calls and gifting, crafted with elegance and delivered with heart across Nigeria.
                     </p>
+
+                    <!-- Book a Call button -->
+                    <a href="index.html#booking" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3 px-8 rounded mt-6 text-[clamp(11px,2.5vw,13px)] transition-all inline-block">
+                        Book a Call
+                    </a>
+
                 </div>
 
-                <!-- Heading: "About" + gold "Élégant" -->
-                <h2 class="font-playfair font-bold mt-5 about-heading">
-                    About <span class="gold-gradient-text">Élégant</span>
-                </h2>
-
-                <!-- Italic gold tagline -->
-                <div class="flex items-center justify-center gap-3 mt-3 tagline-wrapper whitespace-nowrap about-tagline-wrapper">
-                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
-                    <p class="font-cormorant italic text-gold-light tracking-[2px] text-center tagline-text">
-                        Where Every Call Becomes a Memory
-                    </p>
-                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                <!-- RIGHT COLUMN: Image with gold frame (DESKTOP ONLY) -->
+                <!-- On mobile this entire div is hidden via CSS -->
+                <div class="about-image-col">
+                    <div class="about-image-wrapper">
+                        <!-- Gold frame behind the image (offset 10px) -->
+                        <div class="about-image-frame"></div>
+                        <!-- The actual image -->
+                        <img src="data:image/jpeg;base64,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" alt="Luxury gift box with gold ribbon" loading="lazy">
+                    </div>
                 </div>
 
-                <!-- Gold diamond divider: — ◆ — -->
-                <div class="about-divider mt-6">
-                    <span class="about-divider-line"></span>
-                    <span class="about-divider-diamond">◆</span>
-                    <span class="about-divider-line"></span>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- ABOUT US — BOTTOM SECTION                     -->
+        <!-- Our Story + Stats (full width, scrolls into view) -->
+        <!-- ============================================ -->
+        <section class="flex flex-col items-center px-5 mt-16 md:mt-24 lg:mt-32">
+            <div class="max-w-[1100px] w-full">
+
+                <!-- Gold diamond divider -->
+                <div class="flex justify-center mb-8 md:mb-10">
+                    <div class="about-divider">
+                        <span class="about-divider-line"></span>
+                        <span class="about-divider-diamond">◆</span>
+                        <span class="about-divider-line"></span>
+                    </div>
                 </div>
 
-                <!-- ============================================
-                     TWO COLUMNS ON DESKTOP:
-                     - Left: Our Story text
-                     - Right: Stat cards
-                     ============================================ -->
+                <!-- "Our Story" subheading -->
+                <h3 class="font-playfair font-semibold text-white about-subheading text-center md:text-left mb-5">
+                    Our Story
+                </h3>
 
-                <!-- Our Story — text column (left on desktop) -->
-                <div class="about-story-col mt-6">
-
-                    <!-- Subheading -->
-                    <h3 class="font-playfair font-semibold text-white about-subheading mb-4">
-                        Our Story
-                    </h3>
-
-                    <!-- Paragraph 1 -->
-                    <p class="about-story-text">
+                <!-- Story text -->
+                <div class="max-w-[700px] mx-auto md:mx-0">
+                    <p class="about-story-text text-center md:text-left">
                         Élégant Calls was born from a simple truth — the most meaningful moments deserve more than a quick text. We believe that hearing a voice, feeling the emotion in every word, transforms an ordinary moment into an unforgettable memory.
                     </p>
 
-                    <!-- Paragraph 2 -->
-                    <p class="about-story-text mt-4">
+                    <p class="about-story-text mt-4 text-center md:text-left">
                         From intimate birthday surprises to grand anniversary celebrations, we craft each call with care, elegance, and a touch of magic — because the people you love deserve nothing less.
                     </p>
-
                 </div>
 
-                <!-- Stats — row of 3 on mobile, stacked column on desktop (right side) -->
-                <div class="about-stats-col mt-8 w-full">
-                    <div class="about-stats-row">
+                <!-- Stats — 3 cards in a row -->
+                <div class="about-stats-row mt-10 max-w-[500px] mx-auto md:mx-0 md:max-w-none">
 
-                        <!-- Stat 1: Calls Made -->
-                        <div class="about-stat-card">
-                            <p class="about-stat-number">500+</p>
-                            <p class="about-stat-label">Calls Made</p>
-                        </div>
-
-                        <!-- Stat 2: Client Satisfaction -->
-                        <div class="about-stat-card">
-                            <p class="about-stat-number">98%</p>
-                            <p class="about-stat-label">Satisfaction</p>
-                        </div>
-
-                        <!-- Stat 3: Years of Excellence -->
-                        <div class="about-stat-card">
-                            <p class="about-stat-number">5+</p>
-                            <p class="about-stat-label">Years</p>
-                        </div>
-
+                    <!-- Stat 1 -->
+                    <div class="about-stat-card">
+                        <p class="about-stat-number">500+</p>
+                        <p class="about-stat-label">Calls Made</p>
                     </div>
+
+                    <!-- Stat 2 -->
+                    <div class="about-stat-card">
+                        <p class="about-stat-number">98%</p>
+                        <p class="about-stat-label">Satisfaction</p>
+                    </div>
+
+                    <!-- Stat 3 -->
+                    <div class="about-stat-card">
+                        <p class="about-stat-number">5+</p>
+                        <p class="about-stat-label">Years</p>
+                    </div>
+
                 </div>
 
             </div>
@@ -566,7 +661,6 @@
         const menuOverlay = document.getElementById('menu-overlay');
         const menuLinks = document.querySelectorAll('.mobile-menu-link');
 
-        /* Close the menu and restore scrolling */
         function closeMenu() {
             hamburger.classList.remove('open');
             mobileMenu.classList.remove('open');
@@ -574,7 +668,6 @@
             document.body.style.overflow = '';
         }
 
-        /* Open the menu and lock scrolling */
         function openMenu() {
             hamburger.classList.add('open');
             mobileMenu.classList.add('open');
@@ -582,7 +675,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        /* Toggle menu on hamburger click */
         hamburger.addEventListener('click', () => {
             if (mobileMenu.classList.contains('open')) {
                 closeMenu();
@@ -591,14 +683,12 @@
             }
         });
 
-        /* Close menu when any nav link is clicked */
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
                 closeMenu();
             });
         });
 
-        /* Close menu when the dark overlay is clicked */
         menuOverlay.addEventListener('click', () => {
             closeMenu();
         });
@@ -607,7 +697,7 @@
     <!-- ============================================ -->
     <!-- FOOTER — same as index.html                  -->
     <!-- ============================================ -->
-    <footer class="bg-dark border-t border-card-border px-5 pt-12 pb-6">
+    <footer class="bg-dark border-t border-card-border mt-16 md:mt-24 lg:mt-32 px-5 pt-12 pb-6">
 
         <!-- Top: Logo + tagline -->
         <div class="text-center mb-10">
@@ -641,7 +731,7 @@
                 </ul>
             </div>
 
-            <!-- Column 3: Support (hidden on mobile, visible at md+) -->
+            <!-- Column 3: Support (hidden on mobile) -->
             <div class="hide-on-phone">
                 <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Support</h4>
                 <ul class="flex flex-col gap-2">
