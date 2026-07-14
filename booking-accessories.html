@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accessories — Browse Collection | ÉLÉGANT CALLS</title>
+    <title>Accessories — ÉLÉGANT CALLS</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,7 +91,9 @@
         .acc-input::placeholder { color: #666; }
 
         /* Selected item */
-
+        .acc-item.selected { border-color: #C9A84C !important; box-shadow: 0 0 20px rgba(201, 168, 76, 0.2); }
+        .acc-item.selected .acc-checkbox { background: #C9A84C; border-color: #C9A84C; }
+        .acc-item.selected .check-icon { opacity: 1; color: #0A0A0A; }
     </style>
 </head>
 
@@ -169,22 +171,68 @@
         </section>
 
         <!-- ============================================
-             CUSTOM PACKAGE CTA
+             INPUTS SECTION — Budget, Email, Brand, Other
              ============================================ -->
-        <section class="px-5 py-8">
-            <div class="max-w-[700px] mx-auto text-center">
-                <div class="border-2 border-gold/30 rounded-2xl bg-card/30 p-[clamp(20px,5vw,36px)] hover:border-gold/60 transition-all duration-300">
-                    <span class="text-3xl mb-3 block">✨</span>
-                    <h3 class="font-playfair font-bold text-[clamp(18px,4vw,24px)] text-white mb-3">
-                        Want a <span class="gold-gradient-text">Custom Package?</span>
-                    </h3>
-                    <p class="text-gray-text text-[clamp(13px,2.8vw,15px)] leading-relaxed mb-5 font-cormorant italic">
-                        Don't see exactly what you want? Enter your budget when you book and we'll curate an elegantly personalized package just for you — with AI-powered recommendations! 🤎
-                    </p>
-                    <a href="booking-service.html" class="gold-gradient-bg text-black-shine font-bold text-[clamp(11px,2.5vw,13px)] tracking-[1.5px] uppercase px-8 py-3 rounded-lg inline-block transition-all hover:shadow-[0_4px_20px_rgba(201,168,76,0.3)]">
-                        Book Now to Customize
-                    </a>
+        <section class="px-5 py-6">
+            <div class="max-w-[1100px] mx-auto flex flex-col items-center gap-6">
+
+                <!-- Budget Input -->
+                <div class="border-2 border-gold/40 rounded-2xl bg-card/50 p-[clamp(20px,5vw,32px)] text-center max-w-[450px] w-full hover:border-gold/70 transition-all duration-300">
+                    <div class="flex justify-center mb-3">
+                        <svg width="40" height="40" viewBox="0 0 60 60" fill="none">
+                            <rect x="15" y="20" width="30" height="30" rx="8" fill="none" stroke="#C9A84C" stroke-width="2"/>
+                            <path d="M25 20 Q25 10 30 8 Q35 10 35 20" fill="none" stroke="#C9A84C" stroke-width="2"/>
+                            <text x="30" y="40" text-anchor="middle" fill="#C9A84C" font-size="16" font-weight="bold">₦</text>
+                        </svg>
+                    </div>
+                    <h3 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4">WHAT IS YOUR BUDGET?</h3>
+                    <div class="relative inline-block w-full max-w-[300px]">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gold font-bold text-[clamp(16px,4vw,20px)]">₦</span>
+                        <input type="text" id="budget-input" class="acc-input text-[clamp(16px,4vw,20px)] font-semibold py-3 px-4 pl-8 w-full" placeholder="Enter amount" inputmode="numeric">
+                    </div>
                 </div>
+
+                <!-- Email + Brand + Other Inputs (side by side on desktop, stacked on mobile) -->
+                <div class="w-full max-w-[600px] flex flex-col gap-4">
+
+                    <!-- Email input -->
+                    <div>
+                        <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">📧 Your Gmail (for specific brands)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gold/60">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
+                            </span>
+                            <input type="email" id="email-input" class="acc-input text-[clamp(13px,3vw,15px)] py-2.5 px-4 pl-9 w-full" placeholder="yourname@gmail.com">
+                        </div>
+                        <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">We'll reach out to discuss your preferred brands</p>
+                    </div>
+
+                    <!-- Brand input -->
+                    <div>
+                        <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">🏷️ Specific Brand You Want</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gold/60">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                            </span>
+                            <input type="text" id="brand-input" class="acc-input text-[clamp(13px,3vw,15px)] py-2.5 px-4 pl-9 w-full" placeholder="e.g. Swarovski, Zara, H&M...">
+                        </div>
+                        <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Tell us the exact brand and we'll try to get it</p>
+                    </div>
+
+                    <!-- Other items input -->
+                    <div>
+                        <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">✨ Something Not Listed?</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gold/60">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </span>
+                            <textarea id="other-input" class="acc-input text-[clamp(13px,3vw,15px)] py-2.5 px-4 pl-9 w-full resize-none" rows="3" placeholder="e.g. A custom photo frame, a special keychain, a handwritten letter..."></textarea>
+                        </div>
+                        <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">If you want something not shown above, let us know!</p>
+                    </div>
+
+                </div>
+
             </div>
         </section>
 
@@ -210,10 +258,16 @@
                     <div class="grid grid-cols-3 min-[440px]:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 
                             <!-- Necklace Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Necklace">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Necklace">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Necklace</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -221,10 +275,16 @@
                                 </div>
                             </div>
                             <!-- Hand Chains Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Hand Chains">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Hand Chains">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Hand Chains</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -232,10 +292,16 @@
                                 </div>
                             </div>
                             <!-- Knuckle Rings Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Knuckle Rings">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Knuckle Rings">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Knuckle Rings</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -243,10 +309,16 @@
                                 </div>
                             </div>
                             <!-- Bead Bracelets Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Bead Bracelets">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Bead Bracelets">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Bead Bracelets</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -254,10 +326,16 @@
                                 </div>
                             </div>
                             <!-- Cross Bags Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Cross Bags">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Cross Bags">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Cross Bags</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -265,10 +343,16 @@
                                 </div>
                             </div>
                             <!-- Shoulder Bags Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Shoulder Bags">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Shoulder Bags">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Shoulder Bags</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -276,10 +360,16 @@
                                 </div>
                             </div>
                             <!-- Hand Bags Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Hand Bags">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Hand Bags">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Hand Bags</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -287,10 +377,16 @@
                                 </div>
                             </div>
                             <!-- Caps Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Caps">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Caps">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Caps</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -316,10 +412,16 @@
                     <div class="grid grid-cols-3 min-[440px]:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 
                             <!-- Lip Oil Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Lip Oil">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Lip Oil">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Lip Oil</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -327,10 +429,16 @@
                                 </div>
                             </div>
                             <!-- Lip Gloss Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Lip Gloss">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Lip Gloss">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Lip Gloss</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -338,10 +446,16 @@
                                 </div>
                             </div>
                             <!-- Lip Liner Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Lip Liner">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Lip Liner">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Lip Liner</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -349,10 +463,16 @@
                                 </div>
                             </div>
                             <!-- Nail Polish Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Nail Polish">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Nail Polish">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Nail Polish</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -360,10 +480,16 @@
                                 </div>
                             </div>
                             <!-- Press-On Nails Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Press-On Nails">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Press-On Nails">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Press-On Nails</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -371,10 +497,16 @@
                                 </div>
                             </div>
                             <!-- Lip Balm Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Lip Balm">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Lip Balm">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Lip Balm</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -382,10 +514,16 @@
                                 </div>
                             </div>
                             <!-- Pimple Patch Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Pimple Patch">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Pimple Patch">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Pimple Patch</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -393,10 +531,16 @@
                                 </div>
                             </div>
                             <!-- Face Mask Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Face Mask">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Face Mask">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Face Mask</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -422,10 +566,16 @@
                     <div class="grid grid-cols-3 min-[440px]:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 
                             <!-- Perfumes Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Perfumes">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Perfumes">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Perfumes</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -433,10 +583,16 @@
                                 </div>
                             </div>
                             <!-- Perfume Oil Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Perfume Oil">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Perfume Oil">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Perfume Oil</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -444,10 +600,16 @@
                                 </div>
                             </div>
                             <!-- Body Mist Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Body Mist">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Body Mist">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Body Mist</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -455,10 +617,16 @@
                                 </div>
                             </div>
                             <!-- Body Spray Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Body Spray">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Body Spray">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Body Spray</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -484,10 +652,16 @@
                     <div class="grid grid-cols-3 min-[440px]:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 
                             <!-- Jersey Headband Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Jersey Headband">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Jersey Headband">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Jersey Headband</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -495,10 +669,16 @@
                                 </div>
                             </div>
                             <!-- Jersey Scarf Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Jersey Scarf">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Jersey Scarf">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Jersey Scarf</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -506,10 +686,16 @@
                                 </div>
                             </div>
                             <!-- Head Warmer Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Head Warmer">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Head Warmer">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Head Warmer</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -517,10 +703,16 @@
                                 </div>
                             </div>
                             <!-- Beret Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Beret">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Beret">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Beret</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -528,10 +720,16 @@
                                 </div>
                             </div>
                             <!-- Claw Clip Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Claw Clip">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Claw Clip">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Claw Clip</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -539,10 +737,16 @@
                                 </div>
                             </div>
                             <!-- Scrunchies Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Scrunchies">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Scrunchies">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Scrunchies</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -550,10 +754,16 @@
                                 </div>
                             </div>
                             <!-- Glasses Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Glasses">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Glasses">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Glasses</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -579,10 +789,16 @@
                     <div class="grid grid-cols-3 min-[440px]:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 
                             <!-- Rechargeable Fans Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Rechargeable Fans">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Rechargeable Fans">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Rechargeable Fans</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -590,10 +806,16 @@
                                 </div>
                             </div>
                             <!-- Sippy Cups Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Sippy Cups">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Sippy Cups">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Sippy Cups</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -601,10 +823,16 @@
                                 </div>
                             </div>
                             <!-- Phone Suction Card -->
-                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden hover:border-gold/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-name="Phone Suction">
+                            <div class="acc-item bg-card border border-card-border rounded-xl overflow-hidden cursor-pointer group hover:border-gold/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,168,76,0.1)]" data-item="Phone Suction">
                                 <!-- Thumbnail area -->
                                 <div class="relative bg-dark border-b border-card-border flex items-center justify-center group-hover:border-gold/30 transition-colors py-3">
                                     <span class="text-[clamp(12px,2.5vw,14px)] text-gold/70 group-hover:text-gold font-semibold uppercase tracking-[0.5px] transition-colors">Phone Suction</span>
+                                    <!-- Checkbox overlay -->
+                                    <div class="acc-checkbox absolute top-2 right-2 w-5 h-5 rounded border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 group-hover:border-gold">
+                                        <svg class="check-icon w-3 h-3 text-gold opacity-0 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <!-- Item name -->
                                 <div class="px-2 py-2.5 text-center">
@@ -679,8 +907,37 @@
         menuLinks.forEach(link => link.addEventListener('click', () => closeMenu()));
         menuOverlay.addEventListener('click', () => closeMenu());
 
+        // ---- Item selection toggle ----
+        // classList.toggle('selected') adds gold border + checkmark when clicked
+        const accItems = document.querySelectorAll('.acc-item[data-item]');
+        accItems.forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('selected');
+            });
+        });
 
+        // ---- Budget input: numbers only + comma formatting ----
+        const budgetInput = document.getElementById('budget-input');
+        budgetInput.addEventListener('input', () => {
+            let raw = budgetInput.value.replace(/[^0-9]/g, '');
+            if (raw.length > 0) {
+                // Number() converts string to number, toLocaleString() adds commas
+                budgetInput.value = Number(raw).toLocaleString('en-NG');
+            } else {
+                budgetInput.value = '';
+            }
+        });
 
+        // ---- Email input: basic validation on blur ----
+        const emailInput = document.getElementById('email-input');
+        emailInput.addEventListener('blur', () => {
+            let email = emailInput.value.trim();
+            if (email.length > 0 && !email.includes('@')) {
+                emailInput.style.borderColor = '#ef4444';
+            } else {
+                emailInput.style.borderColor = '';
+            }
+        });
     </script>
 
     <!-- FOOTER -->
