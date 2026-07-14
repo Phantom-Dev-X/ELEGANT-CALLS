@@ -12,6 +12,33 @@
 
     <!-- Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'black-shine': '#0A0A0A',
+                        'dark':        '#111111',
+                        'card':        '#1A1A1A',
+                        'card-border': '#2A2A2A',
+                        'gold':        '#C9A84C',
+                        'gold-light':  '#E8D48B',
+                        'gold-dark':   '#A68A3E',
+                        'cream':       '#F5E6CC',
+                        'gray-text':   '#B8B8B8',
+                        'gray-dark':   '#666666',
+                    },
+                    fontFamily: {
+                        'playfair':  ['"Playfair Display"', 'serif'],
+                        'inter':     ['"Inter"', 'sans-serif'],
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+
 
     <!-- Our Tailwind config (same colors + fonts as index.html) -->
         <script>
