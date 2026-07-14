@@ -378,6 +378,161 @@
                 display: none;
             }
         }
+
+        /* ============================================
+           ABOUT SECTION — Custom styles
+           ============================================
+           Mobile-first: single column, everything stacked.
+           Desktop (768px+): two columns — story left, stats right.
+           ============================================ */
+
+        /* --- About badge text (same pattern as hero badge) --- */
+        .about-badge-text {
+            font-size: clamp(8px, 2vw, 11px);
+            letter-spacing: clamp(1px, 1.5vw, 3px);
+        }
+
+        /* --- About heading: "About" + gold "Élégant" --- */
+        .about-heading {
+            font-size: clamp(28px, 7vw, 48px);
+            line-height: 1.15;
+        }
+
+        /* --- Gold diamond divider ◆ --- */
+        .about-divider {
+            width: 120px;                    /* total width of the line */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .about-divider-line {
+            flex: 1;                         /* lines stretch to fill gap */
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,         /* fade in from left */
+                #C9A84C,            /* gold in the middle */
+                transparent          /* fade out to right */
+            );
+        }
+        .about-divider-diamond {
+            color: #C9A84C;
+            font-size: 8px;
+            line-height: 1;
+        }
+
+        /* --- Our Story body text --- */
+        .about-story-text {
+            font-size: clamp(14px, 3.2vw, 16px);
+            line-height: 1.9;
+            color: #B8B8B8;                 /* gray-text */
+        }
+
+        /* --- Stat cards in a row on mobile --- */
+        .about-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);  /* 3 equal columns */
+            gap: 12px;
+        }
+
+        /* --- Single stat card --- */
+        .about-stat-card {
+            background: #1A1A1A;            /* card color */
+            border: 1px solid #2A2A2A;      /* card-border */
+            border-radius: 8px;
+            padding: clamp(14px, 3vw, 20px) clamp(8px, 2vw, 16px);
+            text-align: center;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .about-stat-card:hover {
+            border-color: #C9A84C;          /* gold border on hover */
+            transform: translateY(-2px);
+        }
+
+        /* --- Stat number (big gold) --- */
+        .about-stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 700;
+            color: #C9A84C;                 /* gold */
+        }
+
+        /* --- Stat label (small gray) --- */
+        .about-stat-label {
+            font-size: clamp(9px, 2.2vw, 12px);
+            color: #B8B8B8;                 /* gray-text */
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================
+           ABOUT SECTION — 768px breakpoint
+           ============================================
+           Two-column layout: story on left, stats on right.
+           Stats stack vertically instead of in a row.
+           ============================================ */
+        @media (min-width: 768px) {
+            .about-layout {
+                flex-direction: row;        /* side by side */
+                text-align: left;           /* left-align text */
+                align-items: flex-start;
+                gap: clamp(32px, 5vw, 60px);
+            }
+
+            .about-story-col {
+                flex: 1;                    /* takes up remaining space */
+            }
+
+            .about-stats-col {
+                flex: 0 0 auto;            /* only as wide as its content */
+                width: 220px;              /* fixed width for stat cards */
+            }
+
+            /* Stats stack vertically on desktop */
+            .about-stats-row {
+                grid-template-columns: 1fr; /* 1 column = stacked */
+                gap: 16px;
+            }
+
+            /* Desktop stat card: left-aligned with gold left border */
+            .about-stat-card {
+                text-align: left;
+                border-left: 3px solid #C9A84C;  /* gold left accent */
+                padding: 16px 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            /* Bigger heading on desktop */
+            .about-heading {
+                font-size: clamp(36px, 5vw, 48px);
+            }
+
+            /* Wider divider */
+            .about-divider {
+                width: 180px;
+            }
+        }
+
+        /* ============================================
+           ABOUT SECTION — 1024px breakpoint
+           ============================================ */
+        @media (min-width: 1024px) {
+            .about-stats-col {
+                width: 260px;
+            }
+
+            .about-stat-number {
+                font-size: 32px;
+            }
+
+            .about-stat-label {
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+        }
     </style>
 </head>
 
@@ -495,6 +650,90 @@
 
             </div>
         </div>
+
+        <!-- ============================================ -->
+        <!-- ABOUT US SECTION                              -->
+        <!-- Mobile: single column, everything stacked     -->
+        <!-- Desktop: two columns — story left, stats right -->
+        <!-- ============================================ -->
+        <section class="flex justify-center px-5 mt-16 md:mt-24 lg:mt-32" id="about">
+            <div class="flex flex-col items-center text-center md:max-w-[700px] lg:max-w-[1100px] w-full about-layout">
+
+                <!-- Badge: "WHO WE ARE" — same pill style as hero badge -->
+                <div class="border border-gold/40 bg-gold/[0.05] rounded-full py-2 px-4 md:py-2.5 md:px-6 inline-block">
+                    <p class="text-gold font-semibold uppercase about-badge-text">
+                        ✦ Who We Are
+                    </p>
+                </div>
+
+                <!-- Heading: "About" + gold "Élégant" -->
+                <h2 class="font-playfair font-bold mt-5 about-heading">
+                    About <span class="gold-gradient-text">Élégant</span>
+                </h2>
+
+                <!-- Italic gold tagline -->
+                <div class="flex items-center justify-center gap-3 mt-3 tagline-wrapper whitespace-nowrap">
+                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                    <p class="font-cormorant italic text-gold-light tracking-[2px] text-center tagline-text">
+                        Where Every Call Becomes a Memory
+                    </p>
+                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                </div>
+
+                <!-- Gold diamond divider: — ◆ — -->
+                <div class="about-divider mt-6">
+                    <span class="about-divider-line"></span>
+                    <span class="about-divider-diamond">◆</span>
+                    <span class="about-divider-line"></span>
+                </div>
+
+                <!-- Our Story — text column (left on desktop) -->
+                <div class="about-story-col mt-6">
+
+                    <!-- Subheading -->
+                    <h3 class="font-playfair font-semibold text-white text-[clamp(18px,4vw,24px)] mb-4">
+                        Our Story
+                    </h3>
+
+                    <!-- Paragraph 1 -->
+                    <p class="about-story-text">
+                        Élégant Calls was born from a simple truth — the most meaningful moments deserve more than a quick text. We believe that hearing a voice, feeling the emotion in every word, transforms an ordinary moment into an unforgettable memory.
+                    </p>
+
+                    <!-- Paragraph 2 -->
+                    <p class="about-story-text mt-4">
+                        From intimate birthday surprises to grand anniversary celebrations, we craft each call with care, elegance, and a touch of magic — because the people you love deserve nothing less.
+                    </p>
+
+                </div>
+
+                <!-- Stats — row of 3 on mobile, stacked column on desktop (right side) -->
+                <div class="about-stats-col mt-8 w-full">
+                    <div class="about-stats-row">
+
+                        <!-- Stat 1: Calls Made -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">500+</p>
+                            <p class="about-stat-label">Calls Made</p>
+                        </div>
+
+                        <!-- Stat 2: Client Satisfaction -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">98%</p>
+                            <p class="about-stat-label">Satisfaction</p>
+                        </div>
+
+                        <!-- Stat 3: Years of Excellence -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">5+</p>
+                            <p class="about-stat-label">Years</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
 
         <!-- ============================================ -->
         <!-- HOW IT WORKS SECTION                         -->
