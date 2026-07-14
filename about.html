@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — ÉLÉGANT CALLS</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Our Tailwind config (same colors + fonts as index.html) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'black-shine': '#0A0A0A',
+                        'dark':        '#111111',
+                        'card':        '#1A1A1A',
+                        'card-border': '#2A2A2A',
+                        'gold':        '#C9A84C',
+                        'gold-light':  '#E8D48B',
+                        'gold-dark':   '#A68A3E',
+                        'cream':       '#F5E6CC',
+                        'gray-text':   '#B8B8B8',
+                        'gray-dark':   '#666666',
+                    },
+                    fontFamily: {
+                        'playfair':  ['"Playfair Display"', 'serif'],
+                        'inter':     ['"Inter"', 'sans-serif'],
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* The reset */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { scroll-behavior: smooth; }
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; }
+        ul, ol { list-style: none; }
+
+        /*
+            ============================================
+            OUR 3 BREAKPOINTS — MOBILE FIRST
+            ============================================
+            Base CSS       = 0 - 439px    (small phone)
+            @media 440px   = 440px+       (big phone / small tablet)
+            @media 768px   = 768px+       (tablet)
+            @media 1024px  = 1024px+      (laptop and above)
+            ============================================
+        */
+
+        /* --- Gold gradient text --- */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Gold gradient background --- */
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%);
+        }
+
+        .gold-gradient-bg:hover {
+            box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================
+           HAMBURGER BUTTON — 3 lines that become an X
+           ============================================ */
+        .hamburger {
+            position: relative;
+            width: 24px;
+            height: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger span {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #C9A84C;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger span:nth-child(3) { bottom: 0; }
+
+        /* When .open: transform into an X */
+        .hamburger.open span:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+            bottom: auto;
+            top: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+
+        /* ============================================
+           MOBILE MENU — slides down below the navbar
+           ============================================ */
+        #mobile-menu {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        #mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-menu-link {
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-menu-link:hover {
+            padding-left: 8px;
+        }
+
+        /* ============================================
+           MENU OVERLAY — dark backdrop
+           ============================================ */
+        #menu-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #menu-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* --- Desktop nav: hidden on mobile, visible at 768px+ --- */
+        .desktop-nav {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .desktop-nav {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .hamburger {
+                display: none;
+            }
+        }
+
+        .desktop-link {
+            color: #B8B8B8;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        @media (min-width: 1024px) {
+            .desktop-link {
+                font-size: 13px;
+                letter-spacing: 1.5px;
+            }
+            .desktop-nav {
+                gap: 20px;
+            }
+        }
+
+        .desktop-link:hover {
+            color: #C9A84C;
+        }
+
+        /* --- Elements hidden on phone, visible on tablet+ --- */
+        .hide-on-phone {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .hide-on-phone {
+                display: block;
+            }
+        }
+
+        /* ============================================
+           ABOUT PAGE — Custom styles
+           ============================================
+           Mobile-first: single column, centered.
+           768px+: two columns — story left, stats right.
+           1024px+: bigger text, wider stats column.
+           ============================================ */
+
+        /* --- About badge text --- */
+        .about-badge-text {
+            font-size: clamp(8px, 2vw, 11px);
+            letter-spacing: clamp(1px, 1.5vw, 3px);
+        }
+
+        /* --- About heading: "About" + gold "Élégant" --- */
+        .about-heading {
+            font-size: clamp(28px, 7vw, 48px);
+            line-height: 1.15;
+        }
+
+        /* --- Tagline (reused from homepage style) --- */
+        .tagline-text {
+            font-size: clamp(13px, 3vw, 22px);
+        }
+        .tagline-wrapper {
+            max-width: clamp(220px, 60vw, 500px);
+        }
+
+        /* --- Gold diamond divider: — ◆ — --- */
+        .about-divider {
+            width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .about-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                #C9A84C,
+                transparent
+            );
+        }
+        .about-divider-diamond {
+            color: #C9A84C;
+            font-size: 8px;
+            line-height: 1;
+        }
+
+        /* --- Our Story body text --- */
+        .about-story-text {
+            font-size: clamp(14px, 3.2vw, 16px);
+            line-height: 1.9;
+            color: #B8B8B8;
+        }
+
+        /* --- "Our Story" subheading --- */
+        .about-subheading {
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        /* --- Stat cards in a row on mobile --- */
+        .about-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        /* --- Single stat card --- */
+        .about-stat-card {
+            background: #1A1A1A;
+            border: 1px solid #2A2A2A;
+            border-radius: 8px;
+            padding: clamp(14px, 3vw, 20px) clamp(8px, 2vw, 16px);
+            text-align: center;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .about-stat-card:hover {
+            border-color: #C9A84C;
+            transform: translateY(-2px);
+        }
+
+        /* --- Stat number (big gold) --- */
+        .about-stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 700;
+            color: #C9A84C;
+        }
+
+        /* --- Stat label (small gray) --- */
+        .about-stat-label {
+            font-size: clamp(9px, 2.2vw, 12px);
+            color: #B8B8B8;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================
+           ABOUT — 440px breakpoint (big phone)
+           ============================================ */
+        @media (min-width: 440px) {
+            /* Stat cards get a bit more room */
+            .about-stats-row {
+                gap: 16px;
+            }
+        }
+
+        /* ============================================
+           ABOUT — 768px breakpoint (tablet / desktop)
+           ============================================
+           Two-column layout: story on left, stats on right.
+           Stats stack vertically instead of in a row.
+           ============================================ */
+        @media (min-width: 768px) {
+            .about-layout {
+                flex-direction: row;
+                text-align: left;
+                align-items: flex-start;
+                gap: clamp(32px, 5vw, 60px);
+            }
+
+            .about-story-col {
+                flex: 1;
+            }
+
+            .about-stats-col {
+                flex: 0 0 auto;
+                width: 220px;
+            }
+
+            /* Stats stack vertically on desktop */
+            .about-stats-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            /* Desktop stat card: left-aligned with gold left border */
+            .about-stat-card {
+                text-align: left;
+                border-left: 3px solid #C9A84C;
+                padding: 16px 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .about-heading {
+                font-size: clamp(36px, 5vw, 48px);
+            }
+
+            .about-divider {
+                width: 180px;
+            }
+
+            /* Tagline lines align left on desktop */
+            .about-tagline-wrapper {
+                justify-content: flex-start;
+            }
+        }
+
+        /* ============================================
+           ABOUT — 1024px breakpoint (big desktop)
+           ============================================ */
+        @media (min-width: 1024px) {
+            .about-stats-col {
+                width: 260px;
+            }
+
+            .about-stat-number {
+                font-size: 32px;
+            }
+
+            .about-stat-label {
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-black-shine text-white font-inter">
+
+    <!-- ============================================ -->
+    <!-- WRAPPER — contains everything on the page    -->
+    <!-- ============================================ -->
+    <div>
+
+        <!-- NAVBAR — same as index.html but links point to index.html -->
+        <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
+            <div class="flex items-center justify-between px-4 py-4 max-w-[1100px] mx-auto w-full">
+
+                <!-- Logo: links back to homepage -->
+                <a href="index.html" class="font-playfair text-xl font-bold gold-gradient-text tracking-[3px]">
+                    ÉLÉGANT
+                </a>
+
+                <!-- Desktop nav links: hidden on mobile, shown at 768px+ -->
+                <div class="desktop-nav">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="index.html#services" class="desktop-link">Services</a>
+                    <a href="index.html#packages" class="desktop-link">Packages</a>
+                    <a href="index.html#pastries" class="desktop-link">Pastries</a>
+                    <a href="index.html#accessories" class="desktop-link">Accessories</a>
+                    <a href="about.html" class="desktop-link text-gold">About</a>
+                    <a href="index.html#contact" class="desktop-link">Contact</a>
+                </div>
+
+                <!-- Right side: hamburger (mobile) + Book Now button -->
+                <div class="flex items-center gap-4">
+                    <button id="hamburger" class="hamburger" aria-label="Open menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    <a href="index.html#booking" class="gold-gradient-bg text-black-shine text-[11px] font-bold tracking-[2px] uppercase px-4 py-2 rounded transition-all">
+                        Book Now
+                    </a>
+                </div>
+
+            </div>
+        </nav>
+
+        <!-- ============================================ -->
+        <!-- MOBILE MENU (dropdown)                       -->
+        <!-- ============================================ -->
+        <div id="mobile-menu" class="fixed top-[60px] left-0 right-0 bg-black-shine/98 backdrop-blur-xl border-b border-gold/20 z-40">
+            <div class="px-6 py-6 flex flex-col">
+                <a href="index.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Home</a>
+                <a href="index.html#services" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Services</a>
+                <a href="index.html#packages" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Packages</a>
+                <a href="index.html#pastries" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Pastries</a>
+                <a href="index.html#accessories" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Accessories</a>
+                <a href="about.html" class="mobile-menu-link text-gold font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">About Us</a>
+                <a href="index.html#contact" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5">Contact</a>
+                <!-- Book Now button inside the menu -->
+                <a href="index.html#booking" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3 rounded mt-5 text-[clamp(11px,2.5vw,13px)] transition-all text-center block">
+                    Book Now
+                </a>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MENU OVERLAY — dark backdrop                 -->
+        <!-- ============================================ -->
+        <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-30"></div>
+
+        <!-- Spacer so content isn't hidden behind fixed navbar -->
+        <div class="h-[60px]"></div>
+
+        <!-- ============================================ -->
+        <!-- ABOUT US CONTENT                              -->
+        <!-- ============================================ -->
+        <section class="flex justify-center px-5 pt-10 md:pt-20 lg:pt-28 pb-8">
+            <div class="flex flex-col items-center text-center md:max-w-[700px] lg:max-w-[1100px] w-full about-layout">
+
+                <!-- Badge: "WHO WE ARE" -->
+                <div class="border border-gold/40 bg-gold/[0.05] rounded-full py-2 px-4 md:py-2.5 md:px-6 inline-block">
+                    <p class="text-gold font-semibold uppercase about-badge-text">
+                        ✦ Who We Are
+                    </p>
+                </div>
+
+                <!-- Heading: "About" + gold "Élégant" -->
+                <h2 class="font-playfair font-bold mt-5 about-heading">
+                    About <span class="gold-gradient-text">Élégant</span>
+                </h2>
+
+                <!-- Italic gold tagline -->
+                <div class="flex items-center justify-center gap-3 mt-3 tagline-wrapper whitespace-nowrap about-tagline-wrapper">
+                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                    <p class="font-cormorant italic text-gold-light tracking-[2px] text-center tagline-text">
+                        Where Every Call Becomes a Memory
+                    </p>
+                    <span class="h-[1px] bg-gold/60 w-[24px]"></span>
+                </div>
+
+                <!-- Gold diamond divider: — ◆ — -->
+                <div class="about-divider mt-6">
+                    <span class="about-divider-line"></span>
+                    <span class="about-divider-diamond">◆</span>
+                    <span class="about-divider-line"></span>
+                </div>
+
+                <!-- ============================================
+                     TWO COLUMNS ON DESKTOP:
+                     - Left: Our Story text
+                     - Right: Stat cards
+                     ============================================ -->
+
+                <!-- Our Story — text column (left on desktop) -->
+                <div class="about-story-col mt-6">
+
+                    <!-- Subheading -->
+                    <h3 class="font-playfair font-semibold text-white about-subheading mb-4">
+                        Our Story
+                    </h3>
+
+                    <!-- Paragraph 1 -->
+                    <p class="about-story-text">
+                        Élégant Calls was born from a simple truth — the most meaningful moments deserve more than a quick text. We believe that hearing a voice, feeling the emotion in every word, transforms an ordinary moment into an unforgettable memory.
+                    </p>
+
+                    <!-- Paragraph 2 -->
+                    <p class="about-story-text mt-4">
+                        From intimate birthday surprises to grand anniversary celebrations, we craft each call with care, elegance, and a touch of magic — because the people you love deserve nothing less.
+                    </p>
+
+                </div>
+
+                <!-- Stats — row of 3 on mobile, stacked column on desktop (right side) -->
+                <div class="about-stats-col mt-8 w-full">
+                    <div class="about-stats-row">
+
+                        <!-- Stat 1: Calls Made -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">500+</p>
+                            <p class="about-stat-label">Calls Made</p>
+                        </div>
+
+                        <!-- Stat 2: Client Satisfaction -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">98%</p>
+                            <p class="about-stat-label">Satisfaction</p>
+                        </div>
+
+                        <!-- Stat 3: Years of Excellence -->
+                        <div class="about-stat-card">
+                            <p class="about-stat-number">5+</p>
+                            <p class="about-stat-label">Years</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HAMBURGER MENU JS                            -->
+    <!-- ============================================ -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        /* Close the menu and restore scrolling */
+        function closeMenu() {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            menuOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* Open the menu and lock scrolling */
+        function openMenu() {
+            hamburger.classList.add('open');
+            mobileMenu.classList.add('open');
+            menuOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        /* Toggle menu on hamburger click */
+        hamburger.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        /* Close menu when any nav link is clicked */
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        /* Close menu when the dark overlay is clicked */
+        menuOverlay.addEventListener('click', () => {
+            closeMenu();
+        });
+    </script>
+
+    <!-- ============================================ -->
+    <!-- FOOTER — same as index.html                  -->
+    <!-- ============================================ -->
+    <footer class="bg-dark border-t border-card-border px-5 pt-12 pb-6">
+
+        <!-- Top: Logo + tagline -->
+        <div class="text-center mb-10">
+            <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(20px,5vw,28px)] tracking-[3px] mb-2 inline-block">ÉLÉGANT</a>
+            <p class="font-cormorant italic text-gold-light text-[clamp(13px,3vw,16px)] tracking-[2px]">Injecting Butterflies, One Heart at a Time</p>
+        </div>
+
+        <!-- Middle: 3 columns of links -->
+        <div class="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-3 gap-8 mb-10">
+
+            <!-- Column 1: Services -->
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Services</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="index.html#services" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Birthday Calls</a></li>
+                    <li><a href="index.html#services" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Anniversary Calls</a></li>
+                    <li><a href="index.html#services" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Love Calls</a></li>
+                    <li><a href="index.html#services" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Apology Calls</a></li>
+                    <li><a href="index.html#services" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">International Calls</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 2: Company -->
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Company</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="about.html" class="text-gold text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">About Us</a></li>
+                    <li><a href="index.html#packages" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Gift Packages</a></li>
+                    <li><a href="index.html#pastries" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Pastries</a></li>
+                    <li><a href="index.html#accessories" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Accessories</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Support (hidden on mobile, visible at md+) -->
+            <div class="hide-on-phone">
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Support</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">FAQs</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Delivery Info</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Social / Contact strip -->
+        <div class="max-w-[1100px] mx-auto flex flex-wrap justify-center gap-6 mb-8">
+            <a href="https://wa.me/2349029675308" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">💬 WhatsApp</a>
+            <a href="https://www.tiktok.com/@phanantomdev" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">🎵 TikTok</a>
+            <a href="mailto:elegantcalls@gmail.com" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📧 Email</a>
+            <a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📍 Meiran, Lagos</a>
+        </div>
+
+        <!-- Divider -->
+        <div class="max-w-[1100px] mx-auto h-[1px] bg-card-border mb-6"></div>
+
+        <!-- Bottom: Credit -->
+        <div class="text-center">
+            <p class="text-gray-dark text-[clamp(10px,2vw,12px)] mb-2">
+                © 2026 ÉLÉGANT CALLS. All rights reserved.
+            </p>
+            <p class="text-gray-text text-[clamp(10px,2vw,12px)]">
+                Developed by <span class="gold-gradient-text font-semibold">【 亗 ᑭᗩTᖇIᑕK ᗪEᐯ 亗 】✧</span>, courtesy of <span class="gold-gradient-text font-semibold">─── 亗 ᴘᴅᴠ ᴛᴇᴄʜɴᴏʟᴏɢɪᴇꜱ 亗 ───</span>
+            </p>
+        </div>
+
+    </footer>
+
+</body>
+</html>
