@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — ÉLÉGANT CALLS</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind config — same as all pages -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'black-shine': '#0A0A0A',
+                        'dark':        '#111111',
+                        'card':        '#1A1A1A',
+                        'card-border': '#2A2A2A',
+                        'gold':        '#C9A84C',
+                        'gold-light':  '#E8D48B',
+                        'gold-dark':   '#A68A3E',
+                        'cream':       '#F5E6CC',
+                        'gray-text':   '#B8B8B8',
+                        'gray-dark':   '#666666',
+                    },
+                    fontFamily: {
+                        'playfair':  ['"Playfair Display"', 'serif'],
+                        'inter':     ['"Inter"', 'sans-serif'],
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ============================================
+           RESET
+           ============================================ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; }
+        ul, ol { list-style: none; }
+
+        /* Gold gradient text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Gold gradient background */
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%);
+        }
+
+        /* ============================================
+           HAMBURGER
+           ============================================ */
+        .hamburger {
+            position: relative; width: 24px; height: 15px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger span {
+            position: absolute; left: 0; width: 100%; height: 2px;
+            background: #C9A84C; border-radius: 2px; transition: all 0.3s ease;
+        }
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger span:nth-child(3) { bottom: 0; }
+        .hamburger.open span:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { bottom: auto; top: 50%; transform: translateY(-50%) rotate(-45deg); }
+
+        /* Mobile menu */
+        #mobile-menu {
+            transform: translateY(-100%); opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none;
+        }
+        #mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .mobile-menu-link { display: block; transition: all 0.2s ease; }
+        .mobile-menu-link:hover { padding-left: 8px; }
+
+        /* Overlay */
+        #menu-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        /* Desktop nav */
+        .desktop-nav { display: none; }
+        @media (min-width: 768px) {
+            .desktop-nav { display: flex; align-items: center; gap: 12px; }
+            .hamburger { display: none; }
+        }
+        .desktop-link {
+            color: #B8B8B8; font-weight: 600; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.3s ease;
+        }
+        @media (min-width: 1024px) {
+            .desktop-link { font-size: 13px; letter-spacing: 1.5px; }
+            .desktop-nav { gap: 20px; }
+        }
+        .desktop-link:hover { color: #C9A84C; }
+
+        .hide-on-phone { display: none; }
+        @media (min-width: 768px) { .hide-on-phone { display: block; } }
+
+        /* ============================================
+           CONTACT PAGE — Custom styles
+           ============================================ */
+        .contact-heading { font-size: clamp(28px, 7vw, 48px); }
+
+        .gold-line {
+            width: clamp(60px, 20vw, 120px); height: 1px;
+            background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+        }
+
+        /* Form input styling — same look for all inputs */
+        .form-input {
+            background: #111111;
+            border: 1.5px solid #2A2A2A;
+            border-radius: 0.75rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(13px, 2.8vw, 15px);
+            padding: 0.75rem 1rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #C9A84C;
+            box-shadow: 0 0 15px rgba(201, 168, 76, 0.15);
+        }
+        .form-input::placeholder { color: #555; }
+
+        /* Select dropdown — same base style but custom arrow */
+        .form-select {
+            background: #111111;
+            border: 1.5px solid #2A2A2A;
+            border-radius: 0.75rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(13px, 2.8vw, 15px);
+            padding: 0.75rem 1rem;
+            width: 100%;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23C9A84C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-select:focus {
+            border-color: #C9A84C;
+            box-shadow: 0 0 15px rgba(201, 168, 76, 0.15);
+        }
+        .form-select option {
+            background: #1A1A1A;
+            color: white;
+        }
+
+        /* Textarea */
+        .form-textarea {
+            background: #111111;
+            border: 1.5px solid #2A2A2A;
+            border-radius: 0.75rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(13px, 2.8vw, 15px);
+            padding: 0.75rem 1rem;
+            width: 100%;
+            outline: none;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-textarea:focus {
+            border-color: #C9A84C;
+            box-shadow: 0 0 15px rgba(201, 168, 76, 0.15);
+        }
+        .form-textarea::placeholder { color: #555; }
+
+        /* Contact info card hover */
+        .info-card {
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(201, 168, 76, 0.5);
+            box-shadow: 0 4px 20px rgba(201, 168, 76, 0.1);
+        }
+
+        /* Send button animation */
+        .send-btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(201, 168, 76, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-black-shine text-white font-inter">
+
+    <div>
+        <!-- ============================================
+             NAVBAR
+             ============================================ -->
+        <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
+            <div class="flex items-center justify-between px-4 py-4 max-w-[1100px] mx-auto w-full">
+                <a href="index.html" class="font-playfair text-xl font-bold gold-gradient-text tracking-[3px]">ÉLÉGANT</a>
+                <div class="desktop-nav">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="services.html" class="desktop-link">Services</a>
+                    <a href="packages.html" class="desktop-link">Packages</a>
+                    <a href="pastries.html" class="desktop-link">Pastries</a>
+                    <a href="accessories.html" class="desktop-link">Accessories</a>
+                    <a href="about.html" class="desktop-link">About</a>
+                    <a href="contact.html" class="desktop-link text-gold">Contact</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="hamburger" class="hamburger" aria-label="Open menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <a href="https://wa.me/2349029675308" class="gold-gradient-bg text-black-shine font-bold text-[clamp(10px,2vw,12px)] tracking-[1px] uppercase px-4 py-2 rounded-full transition-all">Book Now</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed top-[57px] left-0 right-0 z-40 bg-black-shine/98 backdrop-blur-xl border-b border-gold/20">
+            <div class="flex flex-col py-4 px-6">
+                <a href="index.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Home</a>
+                <a href="services.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Services</a>
+                <a href="packages.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Packages</a>
+                <a href="pastries.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Pastries</a>
+                <a href="accessories.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Accessories</a>
+                <a href="about.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">About</a>
+                <a href="contact.html" class="mobile-menu-link text-gold font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5">Contact</a>
+            </div>
+        </div>
+        <div id="menu-overlay" class="fixed inset-0 z-30 bg-black/60"></div>
+
+        <!-- ============================================
+             HERO SECTION
+             ============================================ -->
+        <section class="pt-28 pb-6 px-5 text-center">
+            <div class="max-w-[1100px] mx-auto">
+                <h2 class="font-playfair text-[clamp(20px,5vw,28px)] font-bold gold-gradient-text tracking-[3px] mb-4">ÉLÉGANT CALLS</h2>
+                <h1 class="contact-heading font-playfair font-bold text-white mb-4">
+                    GET IN <span class="gold-gradient-text">TOUCH</span>
+                </h1>
+                <div class="flex justify-center mb-4">
+                    <div class="gold-line"></div>
+                </div>
+                <p class="text-gray-text text-[clamp(13px,2.8vw,15px)] font-cormorant italic max-w-[500px] mx-auto leading-relaxed">
+                    We'd love to hear from you. Whether it's a question, feedback, or a custom order — reach out and we'll respond within 24 hours. 🤎
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================
+             CONTACT FORM + INFO CARDS
+             ============================================ -->
+        <section class="px-4 md:px-5 py-8 md:py-12">
+            <div class="max-w-[1100px] mx-auto">
+
+                <!-- 2-column on desktop, stacked on mobile -->
+                <div class="flex flex-col md:flex-row gap-8 md:gap-10">
+
+                    <!-- LEFT: Contact Form -->
+                    <div class="flex-1">
+                        <div class="border border-card-border rounded-2xl bg-card/50 p-[clamp(20px,5vw,40px)]">
+                            <h3 class="font-playfair font-bold text-[clamp(18px,4vw,24px)] text-white mb-6">Send Us a Message</h3>
+
+                            <form id="contact-form" class="flex flex-col gap-5">
+
+                                <!-- Row 1: Name + Email (side by side on md+) -->
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <div class="flex-1">
+                                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Full Name</label>
+                                        <input type="text" class="form-input" placeholder="Your full name" required>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Email Address</label>
+                                        <input type="email" class="form-input" placeholder="yourname@gmail.com" required>
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Phone + Subject (side by side on md+) -->
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <div class="flex-1">
+                                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Phone / WhatsApp</label>
+                                        <input type="tel" class="form-input" placeholder="+234 xxx xxx xxxx">
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Subject</label>
+                                        <select class="form-select" required>
+                                            <option value="" disabled selected>Select a subject</option>
+                                            <option value="general">General Inquiry</option>
+                                            <option value="custom">Custom Order</option>
+                                            <option value="feedback">Feedback</option>
+                                            <option value="partnership">Partnership</option>
+                                            <option value="issue">Order Issue</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Row 3: Message -->
+                                <div>
+                                    <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Message</label>
+                                    <textarea class="form-textarea" placeholder="Tell us how we can help you..." rows="5" required></textarea>
+                                </div>
+
+                                <!-- Send button -->
+                                <div class="flex justify-end">
+                                    <button type="submit" class="send-btn gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3.5 px-8 rounded-lg text-[clamp(12px,2.5vw,14px)] w-full md:w-auto">
+                                        Send Message
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Contact Info Cards -->
+                    <div class="md:w-[320px] lg:w-[340px] shrink-0 flex flex-col gap-4">
+
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/2349029675308" class="info-card bg-card border border-card-border rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <span class="text-lg">💬</span>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-[clamp(13px,2.8vw,15px)] mb-1">WhatsApp</h4>
+                                <p class="text-gold text-[clamp(12px,2.5vw,14px)]">+234 902 967 5308</p>
+                                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Chat with us →</p>
+                            </div>
+                        </a>
+
+                        <!-- Email -->
+                        <a href="mailto:elegantcalls@gmail.com" class="info-card bg-card border border-card-border rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <span class="text-lg">📧</span>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-[clamp(13px,2.8vw,15px)] mb-1">Email</h4>
+                                <p class="text-gold text-[clamp(12px,2.5vw,14px)]">elegantcalls@gmail.com</p>
+                                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Send email →</p>
+                            </div>
+                        </a>
+
+                        <!-- Location -->
+                        <div class="info-card bg-card border border-card-border rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <span class="text-lg">📍</span>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-[clamp(13px,2.8vw,15px)] mb-1">Location</h4>
+                                <p class="text-gold text-[clamp(12px,2.5vw,14px)]">Meiran, Lagos, Nigeria</p>
+                                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Delivery across Nigeria</p>
+                            </div>
+                        </div>
+
+                        <!-- Response Time -->
+                        <div class="info-card bg-card border border-card-border rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <span class="text-lg">⏰</span>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-[clamp(13px,2.8vw,15px)] mb-1">Response Time</h4>
+                                <p class="text-gold text-[clamp(12px,2.5vw,14px)]">Within 24 hours</p>
+                                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">We never leave you waiting</p>
+                            </div>
+                        </div>
+
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@phanantomdev" class="info-card bg-card border border-card-border rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <span class="text-lg">🎵</span>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-[clamp(13px,2.8vw,15px)] mb-1">TikTok</h4>
+                                <p class="text-gold text-[clamp(12px,2.5vw,14px)]">@phanantomdev</p>
+                                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Follow us →</p>
+                            </div>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             ADMIN / DEVELOPER SECTION
+             ============================================ -->
+        <section class="px-5 py-8 border-t border-card-border">
+            <div class="max-w-[1100px] mx-auto">
+                <div class="max-w-[500px] mx-auto text-center">
+                    <!-- Subtle heading — only visible to those who know -->
+                    <p class="text-gray-dark text-[clamp(9px,2vw,11px)] uppercase tracking-[2px] font-semibold mb-4">For Developers & Admins</p>
+                    <div class="border border-card-border/50 rounded-xl bg-card/30 p-[clamp(16px,4vw,24px)]">
+                        <div class="flex flex-col sm:flex-row gap-3 items-end">
+                            <div class="flex-1 w-full">
+                                <label class="text-gray-dark text-[clamp(9px,2vw,10px)] uppercase tracking-[1px] mb-1.5 block">Admin ID</label>
+                                <input type="text" id="admin-id" class="form-input text-[clamp(12px,2.5vw,14px)] py-2" placeholder="Enter admin ID">
+                            </div>
+                            <div class="flex-1 w-full">
+                                <label class="text-gray-dark text-[clamp(9px,2vw,10px)] uppercase tracking-[1px] mb-1.5 block">Access Code</label>
+                                <input type="password" id="admin-code" class="form-input text-[clamp(12px,2.5vw,14px)] py-2" placeholder="Enter access code">
+                            </div>
+                            <button id="admin-btn" class="border border-gold/40 text-gold bg-transparent font-semibold tracking-[1.5px] uppercase py-2 px-5 rounded-lg text-[clamp(10px,2.2vw,12px)] transition-all hover:bg-gold hover:text-black-shine w-full sm:w-auto shrink-0">
+                                Access Dashboard
+                            </button>
+                        </div>
+                        <p id="admin-msg" class="text-gray-dark text-[clamp(9px,2vw,10px)] mt-3 hidden"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <script>
+        // ---- Mobile menu toggle ----
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        function closeMenu() {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            menuOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function openMenu() {
+            hamburger.classList.add('open');
+            mobileMenu.classList.add('open');
+            menuOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
+        });
+        menuLinks.forEach(link => link.addEventListener('click', () => closeMenu()));
+        menuOverlay.addEventListener('click', () => closeMenu());
+
+        // ---- Contact form submission ----
+        // preventDefault() stops the page from reloading when form is submitted
+        const contactForm = document.getElementById('contact-form');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Don't reload the page!
+
+            // Get all form values
+            const inputs = contactForm.querySelectorAll('.form-input, .form-select, .form-textarea');
+            let allFilled = true;
+
+            // Check required fields
+            inputs.forEach(input => {
+                if (input.required && input.value.trim() === '') {
+                    allFilled = false;
+                    input.style.borderColor = '#ef4444'; // red = missing
+                } else {
+                    input.style.borderColor = ''; // reset to default
+                }
+            });
+
+            if (allFilled) {
+                // Show success message
+                const sendBtn = contactForm.querySelector('.send-btn');
+                const originalText = sendBtn.textContent;
+                sendBtn.textContent = '✓ Message Sent!';
+                sendBtn.style.background = '#22c55e'; // green = success
+                sendBtn.disabled = true;
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    sendBtn.textContent = originalText;
+                    sendBtn.style.background = '';
+                    sendBtn.disabled = false;
+                    contactForm.reset();
+                }, 3000);
+            }
+        });
+
+        // ---- Admin login ----
+        const adminBtn = document.getElementById('admin-btn');
+        const adminMsg = document.getElementById('admin-msg');
+
+        adminBtn.addEventListener('click', () => {
+            const adminId = document.getElementById('admin-id').value.trim();
+            const adminCode = document.getElementById('admin-code').value.trim();
+
+            // Show the message element (was hidden with .hidden class)
+            adminMsg.classList.remove('hidden');
+
+            if (adminId === '' || adminCode === '') {
+                adminMsg.textContent = '⚠️ Please enter both Admin ID and Access Code.';
+                adminMsg.style.color = '#ef4444'; // red
+            } else {
+                // In a real app, this would verify against a database
+                // For now, just show a message
+                adminMsg.textContent = '🔐 Verifying credentials... Dashboard coming soon.';
+                adminMsg.style.color = '#C9A84C'; // gold
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    adminMsg.classList.add('hidden');
+                    document.getElementById('admin-id').value = '';
+                    document.getElementById('admin-code').value = '';
+                }, 3000);
+            }
+        });
+    </script>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="bg-dark border-t border-card-border px-5 pt-12 pb-6">
+
+        <div class="text-center mb-10">
+            <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(20px,5vw,28px)] tracking-[3px] mb-2 inline-block">ÉLÉGANT</a>
+            <p class="font-cormorant italic text-gold-light text-[clamp(13px,3vw,16px)] tracking-[2px]">Injecting Butterflies, One Heart at a Time</p>
+        </div>
+
+        <div class="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-3 gap-8 mb-10">
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Services</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Birthday Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Anniversary Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Love Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Apology Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">International Calls</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Company</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="about.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">About Us</a></li>
+                    <li><a href="packages.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Gift Packages</a></li>
+                    <li><a href="pastries.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Pastries</a></li>
+                    <li><a href="accessories.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Accessories</a></li>
+                </ul>
+            </div>
+            <div class="hide-on-phone">
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Support</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="contact.html" class="text-gold text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Contact Us</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">FAQs</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Delivery Info</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-[1100px] mx-auto flex flex-wrap justify-center gap-6 mb-8">
+            <a href="https://wa.me/2349029675308" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">💬 WhatsApp</a>
+            <a href="https://www.tiktok.com/@phanantomdev" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">🎵 TikTok</a>
+            <a href="mailto:elegantcalls@gmail.com" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📧 Email</a>
+            <a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📍 Meiran, Lagos</a>
+        </div>
+
+        <div class="max-w-[1100px] mx-auto h-[1px] bg-card-border mb-6"></div>
+
+        <div class="text-center">
+            <p class="text-gray-dark text-[clamp(10px,2vw,12px)] mb-2">© 2026 ÉLÉGANT CALLS. All rights reserved.</p>
+            <p class="text-gray-text text-[clamp(10px,2vw,12px)]">Developed by <span class="gold-gradient-text font-semibold">【 亗 ᑭᗩTᖇIᑕK ᗪEᐯ 亗 】✧</span>, courtesy of <span class="gold-gradient-text font-semibold">─── 亗 ᴘᴅᴠ ᴛᴇᴄʜɴᴏʟᴏɢɪᴇꜱ 亗 ───</span></p>
+        </div>
+
+    </footer>
+
+</body>
+</html>
