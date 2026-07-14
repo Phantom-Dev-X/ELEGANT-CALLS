@@ -188,7 +188,7 @@
             .desktop-nav {
                 display: flex;      /* show as flex row on desktop */
                 align-items: center;
-                gap: 16px;         /* tighter gap so links fit */
+                gap: 12px;         /* tighter gap so links fit on tablets */
             }
 
             /* Hide hamburger on desktop */
@@ -203,7 +203,7 @@
             font-weight: 600;
             font-size: 11px;                   /* small so 7 links fit */
             text-transform: uppercase;
-            letter-spacing: 1px;               /* tight letter-spacing */
+            letter-spacing: 0.5px;             /* tight letter-spacing for tablets */
             transition: color 0.3s ease;
         }
 
@@ -214,7 +214,7 @@
                 letter-spacing: 1.5px;
             }
             .desktop-nav {
-                gap: 24px;
+                gap: 20px;
             }
         }
 
@@ -390,7 +390,7 @@
 
         <!-- NAVBAR -->
         <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
-            <div class="flex items-center justify-between px-5 py-4 max-w-[1100px] mx-auto w-full">
+            <div class="flex items-center justify-between px-4 py-4 max-w-[1100px] mx-auto w-full">
 
                 <!-- Logo: left on all screens -->
                 <h1 class="font-playfair text-xl font-bold gold-gradient-text tracking-[3px]">
