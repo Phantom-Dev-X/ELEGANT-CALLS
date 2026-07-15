@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Details — Step 5 | ÉLÉGANT CALLS</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'black-shine': '#0A0A0A',
+                        'dark':        '#111111',
+                        'card':        '#1A1A1A',
+                        'card-border': '#2A2A2A',
+                        'gold':        '#C9A84C',
+                        'gold-light':  '#E8D48B',
+                        'gold-dark':   '#A68A3E',
+                        'cream':       '#F5E6CC',
+                        'gray-text':   '#B8B8B8',
+                        'gray-dark':   '#666666',
+                    },
+                    fontFamily: {
+                        'playfair':  ['"Playfair Display"', 'serif'],
+                        'inter':     ['"Inter"', 'sans-serif'],
+                        'cormorant': ['"Cormorant Garamond"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; }
+        ul, ol { list-style: none; }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .gold-gradient-bg { background: linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%); }
+
+        .hamburger { position: relative; width: 24px; height: 15px; background: none; border: none; cursor: pointer; padding: 0; }
+        .hamburger span { position: absolute; left: 0; width: 100%; height: 2px; background: #C9A84C; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger span:nth-child(3) { bottom: 0; }
+        .hamburger.open span:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { bottom: auto; top: 50%; transform: translateY(-50%) rotate(-45deg); }
+
+        #mobile-menu { transform: translateY(-100%); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none; }
+        #mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .mobile-menu-link { display: block; transition: all 0.2s ease; }
+        .mobile-menu-link:hover { padding-left: 8px; }
+
+        #menu-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .desktop-nav { display: none; }
+        @media (min-width: 768px) { .desktop-nav { display: flex; align-items: center; gap: 12px; } .hamburger { display: none; } }
+        .desktop-link { color: #B8B8B8; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.3s ease; }
+        @media (min-width: 1024px) { .desktop-link { font-size: 13px; letter-spacing: 1.5px; } .desktop-nav { gap: 20px; } }
+        .desktop-link:hover { color: #C9A84C; }
+
+        .hide-on-phone { display: none; }
+        @media (min-width: 768px) { .hide-on-phone { display: block; } }
+
+        /* Input styling */
+        .detail-input {
+            background: #111111; border: 2px solid #2A2A2A; border-radius: 0.75rem;
+            color: white; font-family: 'Inter', sans-serif; outline: none;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .detail-input:focus { box-shadow: 0 0 20px rgba(201, 168, 76, 0.2); border-color: #C9A84C; }
+        .detail-input::placeholder { color: #666; }
+        .detail-input.error { border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.15); }
+
+        /* Progress bar */
+        .progress-bar {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-bottom: 8px;
+        }
+        .progress-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #2A2A2A; transition: all 0.3s ease;
+        }
+        .progress-dot.active { background: #C9A84C; box-shadow: 0 0 8px rgba(201, 168, 76, 0.4); }
+        .progress-dot.completed { background: #C9A84C; }
+        .progress-line { width: 24px; height: 2px; background: #2A2A2A; }
+        .progress-line.completed { background: #C9A84C; }
+        .progress-label {
+            font-size: clamp(9px, 2vw, 11px); color: #666;
+            text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+        }
+        .progress-label.active { color: #C9A84C; }
+
+        /* Selection summary card */
+        .summary-pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 9999px;
+            padding: 4px 12px; font-size: clamp(10px, 2.2vw, 12px);
+            color: #E8D48B; font-weight: 500;
+        }
+    </style>
+</head>
+
+<body class="bg-black-shine text-white font-inter">
+
+    <div>
+        <!-- NAVBAR -->
+        <nav class="fixed top-0 left-0 right-0 z-50 bg-black-shine/95 backdrop-blur-xl border-b border-gold/20">
+            <div class="flex items-center justify-between px-4 py-4 max-w-[1100px] mx-auto w-full">
+                <a href="index.html" class="font-playfair text-xl font-bold gold-gradient-text tracking-[3px]">ÉLÉGANT</a>
+                <div class="desktop-nav">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="services.html" class="desktop-link">Services</a>
+                    <a href="packages.html" class="desktop-link">Packages</a>
+                    <a href="pastries.html" class="desktop-link">Pastries</a>
+                    <a href="accessories.html" class="desktop-link">Accessories</a>
+                    <a href="about.html" class="desktop-link">About</a>
+                    <a href="contact.html" class="desktop-link">Contact</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="hamburger" class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+                    <a href="booking-service.html" class="gold-gradient-bg text-black-shine font-bold text-[clamp(10px,2vw,12px)] tracking-[1px] uppercase px-4 py-2 rounded-full transition-all">Resume Booking</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed top-[57px] left-0 right-0 z-40 bg-black-shine/98 backdrop-blur-xl border-b border-gold/20">
+            <div class="flex flex-col py-4 px-6">
+                <a href="index.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Home</a>
+                <a href="services.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Services</a>
+                <a href="packages.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Packages</a>
+                <a href="pastries.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Pastries</a>
+                <a href="accessories.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">Accessories</a>
+                <a href="about.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5 border-b border-card-border/30">About</a>
+                <a href="contact.html" class="mobile-menu-link text-gray-text font-semibold text-[clamp(15px,3.5vw,18px)] py-3.5">Contact</a>
+            </div>
+        </div>
+        <div id="menu-overlay" class="fixed inset-0 z-30 bg-black/60"></div>
+
+        <!-- ============================================
+             HERO SECTION
+             ============================================ -->
+        <section class="pt-24 pb-4 px-5 text-center">
+            <div class="max-w-[1100px] mx-auto">
+
+                <!-- Progress Bar — dots 1-4 completed, dot 5 active -->
+                <div class="progress-bar mb-2">
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-line completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-line completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-line completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-line completed"></div>
+                    <div class="progress-dot active"></div>
+                </div>
+                <p class="progress-label active mb-4">Step 5 of 5 — Your Details</p>
+
+                <!-- Back link -->
+                <a href="booking-accessories.html" class="text-gold/70 text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-4 inline-block hover:text-gold transition-colors">
+                    ← Back to Accessories
+                </a>
+
+                <!-- Heading -->
+                <h1 class="font-playfair font-bold text-[clamp(24px,6vw,40px)] text-white mb-3">
+                    Your <span class="gold-gradient-text">Details</span>
+                </h1>
+                <p class="text-gray-text text-[clamp(13px,2.8vw,15px)] font-cormorant italic max-w-[500px] mx-auto mb-4">
+                    Almost there! Tell us who this beautiful package is for. ✨
+                </p>
+
+                <!-- Previous selections summary -->
+                <div id="step-info" class="flex flex-wrap justify-center gap-2 mb-2"></div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             DETAILS FORM
+             ============================================ -->
+        <section class="px-5 pb-8">
+            <div class="max-w-[600px] mx-auto">
+
+                <!-- Your Name -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">👤</span> Your Full Name <span class="text-red-400">*</span>
+                    </label>
+                    <input type="text" id="name-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full" placeholder="e.g. Adewale Johnson" required>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">The person placing the order</p>
+                </div>
+
+                <!-- Your Phone -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">📱</span> Your Phone Number <span class="text-red-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold font-bold text-[clamp(14px,3vw,16px)]">+234</span>
+                        <input type="tel" id="phone-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 pl-16 w-full" placeholder="0902 967 5308" inputmode="tel" required>
+                    </div>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">We'll reach you on WhatsApp</p>
+                </div>
+
+                <!-- Your Email -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">📧</span> Your Email
+                    </label>
+                    <input type="email" id="email-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full" placeholder="yourname@gmail.com">
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Optional — for order updates</p>
+                </div>
+
+                <!-- Divider -->
+                <div class="flex items-center gap-3 my-6">
+                    <div class="flex-1 h-[1px] bg-card-border"></div>
+                    <span class="text-gold/60 text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[2px]">Recipient</span>
+                    <div class="flex-1 h-[1px] bg-card-border"></div>
+                </div>
+
+                <!-- Recipient Name -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">💝</span> Recipient's Name <span class="text-red-400">*</span>
+                    </label>
+                    <input type="text" id="recipient-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full" placeholder="e.g. Chioma Adekunle" required>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Who is this gift for?</p>
+                </div>
+
+                <!-- Delivery Date -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">📅</span> Preferred Delivery Date <span class="text-red-400">*</span>
+                    </label>
+                    <input type="date" id="date-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full" required>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">When should we deliver this package?</p>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="mb-5">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">📍</span> Delivery Address <span class="text-red-400">*</span>
+                    </label>
+                    <textarea id="address-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full resize-none" rows="2" placeholder="e.g. 15 Adeniyi Jones Ave, Ikeja, Lagos" required></textarea>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">Where should we deliver?</p>
+                </div>
+
+                <!-- Personal Message -->
+                <div class="mb-6">
+                    <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">
+                        <span class="mr-1">💌</span> Personal Message
+                    </label>
+                    <textarea id="message-input" class="detail-input text-[clamp(14px,3vw,16px)] py-3 px-4 w-full resize-none" rows="3" placeholder="Write a heartfelt note to include with the package..."></textarea>
+                    <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">We'll write this on a beautiful card 🤎</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             PROCEED SECTION
+             ============================================ -->
+        <section class="px-5 py-10 text-center border-t border-card-border" id="proceed-section">
+            <div class="max-w-[1100px] mx-auto">
+                <!-- Error message area -->
+                <p id="form-error" class="text-red-400 text-[clamp(12px,2.5vw,14px)] mb-4 hidden"></p>
+
+                <!-- Proceed button -->
+                <button id="proceed-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-4 px-12 rounded-lg text-[clamp(14px,3vw,16px)] inline-block transition-all hover:shadow-[0_6px_25px_rgba(201,168,76,0.3)] hover:-translate-y-0.5">
+                    Review Order →
+                </button>
+                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-3">Final step — Review & confirm your order</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark border-t border-card-border px-5 pt-12 pb-6">
+        <div class="text-center mb-10">
+            <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(20px,5vw,28px)] tracking-[3px] mb-2 inline-block">ÉLÉGANT</a>
+            <p class="font-cormorant italic text-gold-light text-[clamp(13px,3vw,16px)] tracking-[2px]">Injecting Butterflies, One Heart at a Time</p>
+        </div>
+        <div class="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-3 gap-8 mb-10">
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Services</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Birthday Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Anniversary Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Love Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Apology Calls</a></li>
+                    <li><a href="services.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">International Calls</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Company</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="about.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">About Us</a></li>
+                    <li><a href="packages.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Gift Packages</a></li>
+                    <li><a href="pastries.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Pastries</a></li>
+                    <li><a href="accessories.html" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Accessories</a></li>
+                </ul>
+            </div>
+            <div class="hide-on-phone">
+                <h4 class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[2px] mb-4">Support</h4>
+                <ul class="flex flex-col gap-2">
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">FAQs</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Delivery Info</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1100px] mx-auto flex flex-wrap justify-center gap-6 mb-8">
+            <a href="https://wa.me/2349029675308" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">💬 WhatsApp</a>
+            <a href="https://www.tiktok.com/@phanantomdev" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">🎵 TikTok</a>
+            <a href="mailto:elegantcalls@gmail.com" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📧 Email</a>
+            <a href="#" class="text-gray-text text-[clamp(12px,2.5vw,13px)] hover:text-gold transition-colors">📍 Meiran, Lagos</a>
+        </div>
+        <div class="max-w-[1100px] mx-auto h-[1px] bg-card-border mb-6"></div>
+        <div class="text-center">
+            <p class="text-gray-dark text-[clamp(10px,2vw,12px)] mb-2">© 2026 ÉLÉGANT CALLS. All rights reserved.</p>
+            <p class="text-gray-text text-[clamp(10px,2vw,12px)]">Developed by <span class="gold-gradient-text font-semibold">【 亗 ᑭᗩTᖇIᑕK ᗪEᐯ 亗 】✧</span>, courtesy of <span class="gold-gradient-text font-semibold">─── 亗 ᴘᴅᴠ ᴛᴇᴄʜɴᴏʟᴏɢɪᴇꜱ 亗 ───</span></p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT — Mobile menu + Form validation + sessionStorage -->
+    <script>
+        // ============================================
+        // MOBILE MENU TOGGLE
+        // ============================================
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        function closeMenu() {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            menuOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function openMenu() {
+            hamburger.classList.add('open');
+            mobileMenu.classList.add('open');
+            menuOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
+        });
+        menuLinks.forEach(link => link.addEventListener('click', () => closeMenu()));
+        menuOverlay.addEventListener('click', () => closeMenu());
+
+        // ============================================
+        // SHOW PREVIOUS STEP SELECTIONS
+        // ============================================
+        const stepInfo = document.getElementById('step-info');
+        const savedService = sessionStorage.getItem('booking_service');
+        const savedPkg = sessionStorage.getItem('booking_package');
+        const savedPastries = sessionStorage.getItem('booking_pastries');
+        const savedAcc = sessionStorage.getItem('booking_accessories');
+
+        if (savedService) {
+            const pill = document.createElement('span');
+            pill.className = 'summary-pill';
+            pill.textContent = '📞 ' + savedService;
+            stepInfo.appendChild(pill);
+        }
+        if (savedPkg) {
+            const pill = document.createElement('span');
+            pill.className = 'summary-pill';
+            pill.textContent = '📦 ' + savedPkg;
+            stepInfo.appendChild(pill);
+        }
+        if (savedPastries) {
+            try {
+                const pastries = JSON.parse(savedPastries);
+                if (pastries.length > 0) {
+                    const pill = document.createElement('span');
+                    pill.className = 'summary-pill';
+                    pill.textContent = '🧁 ' + pastries.length + ' pastry' + (pastries.length > 1 ? 's' : '');
+                    stepInfo.appendChild(pill);
+                }
+            } catch(e) {}
+        }
+        if (savedAcc) {
+            try {
+                const acc = JSON.parse(savedAcc);
+                if (acc.length > 0) {
+                    const pill = document.createElement('span');
+                    pill.className = 'summary-pill';
+                    pill.textContent = '💍 ' + acc.length + ' item' + (acc.length > 1 ? 's' : '');
+                    stepInfo.appendChild(pill);
+                }
+            } catch(e) {}
+        }
+
+        // ============================================
+        // FORM INPUTS — Save to sessionStorage on change
+        // ============================================
+        const nameInput = document.getElementById('name-input');
+        const phoneInput = document.getElementById('phone-input');
+        const emailInput = document.getElementById('email-input');
+        const recipientInput = document.getElementById('recipient-input');
+        const dateInput = document.getElementById('date-input');
+        const addressInput = document.getElementById('address-input');
+        const messageInput = document.getElementById('message-input');
+
+        // Restore saved values from sessionStorage
+        const savedName = sessionStorage.getItem('booking_name');
+        if (savedName) nameInput.value = savedName;
+        const savedPhone = sessionStorage.getItem('booking_phone');
+        if (savedPhone) phoneInput.value = savedPhone;
+        const savedEmail2 = sessionStorage.getItem('booking_details_email');
+        if (savedEmail2) emailInput.value = savedEmail2;
+        const savedRecipient = sessionStorage.getItem('booking_recipient');
+        if (savedRecipient) recipientInput.value = savedRecipient;
+        const savedDate = sessionStorage.getItem('booking_date');
+        if (savedDate) dateInput.value = savedDate;
+        const savedAddress = sessionStorage.getItem('booking_address');
+        if (savedAddress) addressInput.value = savedAddress;
+        const savedMessage = sessionStorage.getItem('booking_message');
+        if (savedMessage) messageInput.value = savedMessage;
+
+        // Set min date to today (can't pick past dates)
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // Save on input/change events
+        // Each sessionStorage.setItem() stores the value so if user navigates back, data is preserved
+        nameInput.addEventListener('input', () => sessionStorage.setItem('booking_name', nameInput.value));
+        phoneInput.addEventListener('input', () => sessionStorage.setItem('booking_phone', phoneInput.value));
+        emailInput.addEventListener('input', () => sessionStorage.setItem('booking_details_email', emailInput.value));
+        recipientInput.addEventListener('input', () => sessionStorage.setItem('booking_recipient', recipientInput.value));
+        dateInput.addEventListener('change', () => sessionStorage.setItem('booking_date', dateInput.value));
+        addressInput.addEventListener('input', () => sessionStorage.setItem('booking_address', addressInput.value));
+        messageInput.addEventListener('input', () => sessionStorage.setItem('booking_message', messageInput.value));
+
+        // Remove error class on focus
+        document.querySelectorAll('.detail-input').forEach(input => {
+            input.addEventListener('focus', () => input.classList.remove('error'));
+        });
+
+        // ============================================
+        // PROCEED BUTTON — Validate + Navigate
+        // ============================================
+        const proceedBtn = document.getElementById('proceed-btn');
+        const formError = document.getElementById('form-error');
+
+        proceedBtn.addEventListener('click', () => {
+            formError.classList.add('hidden');
+            let hasError = false;
+
+            // Validate required fields
+            // .trim() removes whitespace — so "   " counts as empty
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('error');
+                hasError = true;
+            }
+            if (!phoneInput.value.trim()) {
+                phoneInput.classList.add('error');
+                hasError = true;
+            }
+            if (!recipientInput.value.trim()) {
+                recipientInput.classList.add('error');
+                hasError = true;
+            }
+            if (!dateInput.value) {
+                dateInput.classList.add('error');
+                hasError = true;
+            }
+            if (!addressInput.value.trim()) {
+                addressInput.classList.add('error');
+                hasError = true;
+            }
+
+            if (hasError) {
+                formError.textContent = 'Please fill in all required fields (marked with *)';
+                formError.classList.remove('hidden');
+                // Scroll to first error
+                const firstError = document.querySelector('.detail-input.error');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // All good — save and proceed
+            sessionStorage.setItem('booking_name', nameInput.value.trim());
+            sessionStorage.setItem('booking_phone', phoneInput.value.trim());
+            sessionStorage.setItem('booking_details_email', emailInput.value.trim());
+            sessionStorage.setItem('booking_recipient', recipientInput.value.trim());
+            sessionStorage.setItem('booking_date', dateInput.value);
+            sessionStorage.setItem('booking_address', addressInput.value.trim());
+            sessionStorage.setItem('booking_message', messageInput.value.trim());
+
+            // Navigate to summary page
+            window.location.href = 'booking-summary.html';
+        });
+    </script>
+
+</body>
+</html>
