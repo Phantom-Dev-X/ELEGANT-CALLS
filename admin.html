@@ -208,20 +208,17 @@
                 <p class="text-gray-text font-cormorant italic text-[clamp(14px,3vw,18px)] mb-8">View messages, look up orders & manage admins</p>
 
                 <!-- ============================================ -->
-                <!-- SETTINGS: JSONBin API Key                     -->
+                <!-- SETTINGS: Cloud Connection Status              -->
                 <!-- ============================================ -->
                 <section class="border border-card-border rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8">
                     <h2 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4 flex items-center gap-2">
-                        ⚙️ Settings
+                        ⚙️ Cloud Connection
                     </h2>
-                    <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">Paste your JSONBin.io API Master Key to load data. Get one free at <a href="https://jsonbin.io" target="_blank" class="text-gold underline">jsonbin.io</a></p>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <input type="password" id="api-key-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="Paste your JSONBin API Master Key...">
-                        <button id="save-key-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
-                            Save Key
-                        </button>
+                    <div class="flex items-center gap-3">
+                        <span id="cloud-status-dot" class="w-3 h-3 rounded-full bg-gold animate-pulse"></span>
+                        <span id="cloud-status-text" class="text-gold text-[clamp(12px,2.5vw,14px)] font-semibold">Connected — messages & orders syncing</span>
                     </div>
-                    <p id="key-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
+                    <p id="cloud-status-detail" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2">Cloud storage is pre-configured. Data auto-syncs on load.</p>
                 </section>
 
                 <!-- ============================================ -->
@@ -352,8 +349,10 @@
         const _0xK = 0x5A;
 
         // Obfuscated primary admin identifier (SHA-256 hash, XOR-encoded)
-        // Decoding: each value XOR'd with _0xK, then joined as string
         const _0xP = [105,62,106,57,60,99,98,98,104,107,99,107,107,57,104,106,110,108,104,60,104,63,109,56,57,108,106,111,110,108,107,59,59,107,110,99,108,63,59,62,111,99,111,111,98,60,108,111,104,57,111,107,98,110,108,62,105,107,62,107,60,108,59,109];
+
+        // Obfuscated cloud service token (XOR-encoded)
+        const _0xA = [126,104,59,126,107,106,126,99,59,50,56,49,32,52,10,25,107,110,110,51,28,52,51,45,98,28,14,19,21,32,11,110,34,40,45,28,111,47,25,20,48,62,54,60,10,43,13,31,15,60,3,24,15,63,109,43,106,31,51,63];
 
         // Decode XOR-encoded array → plain string
         function _0xD(a) { return a.map(function(n){return String.fromCharCode(n^_0xK)}).join(''); }
@@ -649,13 +648,6 @@
             } else {
                 document.getElementById('admins-tab-btn').classList.add('hidden');
             }
-
-            // Load API key if it exists
-            if (API_KEY) {
-                document.getElementById('api-key-input').value = API_KEY;
-                document.getElementById('key-status').textContent = '✅ API key saved in browser';
-                document.getElementById('key-status').style.color = '#C9A84C';
-            }
         }
 
         // ============================================
@@ -719,33 +711,16 @@
 
         // ============================================
         // JSONBin.io CONFIG
+        // API key decoded at runtime from obfuscated source
         // ============================================
-        var API_KEY = localStorage.getItem('ec_admin_apikey') || '';
+        var API_KEY = _0xD(_0xA); // Decoded from obfuscated array
         var ORDERS_BIN_ID = localStorage.getItem('ec_orders_bin') || '';
         var MESSAGES_BIN_ID = localStorage.getItem('ec_messages_bin') || '';
 
-        // Save API key button
-        document.getElementById('save-key-btn').addEventListener('click', async function() {
-            var key = document.getElementById('api-key-input').value.trim();
-            var keyStatus = document.getElementById('key-status');
-
-            if (!key) {
-                keyStatus.textContent = '⚠️ Please paste your API key first';
-                keyStatus.style.color = '#ef4444';
-                return;
-            }
-
-            API_KEY = key;
+        // Also save decoded key to localStorage for other pages (booking-summary, index)
+        if (!localStorage.getItem('ec_admin_apikey')) {
             localStorage.setItem('ec_admin_apikey', API_KEY);
-            keyStatus.textContent = '✅ API key saved! Setting up bins...';
-            keyStatus.style.color = '#C9A84C';
-
-            // Create bins if they don't exist yet
-            await ensureBins();
-            // Load data immediately
-            loadMessages();
-            loadOrders();
-        });
+        }
 
         // ============================================
         // TAB SWITCHING
@@ -791,7 +766,6 @@
                         var data = await res.json();
                         ORDERS_BIN_ID = data.metadata.id;
                         localStorage.setItem('ec_orders_bin', ORDERS_BIN_ID);
-                        document.getElementById('key-status').textContent = '✅ Orders bin created!';
                     }
                 }
                 if (!MESSAGES_BIN_ID) {
@@ -808,13 +782,16 @@
                         var data = await res.json();
                         MESSAGES_BIN_ID = data.metadata.id;
                         localStorage.setItem('ec_messages_bin', MESSAGES_BIN_ID);
-                        document.getElementById('key-status').textContent = '✅ All bins ready! Loading data...';
                     }
                 }
             } catch (err) {
                 console.error('Error creating bins:', err);
-                document.getElementById('key-status').textContent = '⚠️ Could not connect to JSONBin. Check your API key.';
-                document.getElementById('key-status').style.color = '#ef4444';
+                var dot = document.getElementById('cloud-status-dot');
+                var txt = document.getElementById('cloud-status-text');
+                var detail = document.getElementById('cloud-status-detail');
+                if (dot) dot.style.background = '#ef4444';
+                if (txt) { txt.textContent = 'Connection error'; txt.style.color = '#ef4444'; }
+                if (detail) detail.textContent = 'Could not reach cloud storage. Try refreshing.';
             }
         }
 
@@ -852,7 +829,7 @@
         // ============================================
         async function loadMessages() {
             if (!API_KEY || !MESSAGES_BIN_ID) {
-                document.getElementById('messages-list').innerHTML = '<div class="text-center py-12 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Save your API key first</p></div>';
+                document.getElementById('messages-list').innerHTML = '<div class="text-center py-12 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Cloud connection not ready. Try refreshing.</p></div>';
                 return;
             }
             var listEl = document.getElementById('messages-list');
@@ -928,7 +905,7 @@
                 return;
             }
             if (!API_KEY || !ORDERS_BIN_ID) {
-                resultEl.innerHTML = '<div class="text-center py-4 text-red-400 text-[clamp(13px,3vw,15px)]">⚠️ Save your API key first</div>';
+                resultEl.innerHTML = '<div class="text-center py-4 text-red-400 text-[clamp(13px,3vw,15px)]">⚠️ Cloud connection not ready. Try refreshing.</div>';
                 return;
             }
 
@@ -1034,7 +1011,7 @@
         // ============================================
         async function loadOrders() {
             if (!API_KEY || !ORDERS_BIN_ID) {
-                document.getElementById('recent-orders').innerHTML = '<div class="text-center py-8 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Save your API key first</p></div>';
+                document.getElementById('recent-orders').innerHTML = '<div class="text-center py-8 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Cloud connection not ready. Try refreshing.</p></div>';
                 return;
             }
             var listEl = document.getElementById('recent-orders');
