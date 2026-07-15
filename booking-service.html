@@ -90,6 +90,11 @@
 
                 sessionStorage.setItem('booking_service', serviceName);
                 sessionStorage.setItem('booking_service_price', servicePrice);
+
+                // Auto-proceed to Step 2 after a short delay so user sees the selection
+                setTimeout(() => {
+                    window.location.href = 'booking-package.html';
+                }, 600);
             });
         });
 
