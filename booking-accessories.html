@@ -202,7 +202,7 @@
         </section>
 
         <!-- ============================================
-             INPUTS SECTION — Budget, Email, Brand, Other
+             INPUTS SECTION — Budget & Details
              ============================================ -->
         <section class="px-5 py-6">
             <div class="max-w-[1100px] mx-auto flex flex-col items-center gap-6">
@@ -223,21 +223,8 @@
                     </div>
                 </div>
 
-                <!-- Email + Brand + Other Inputs (side by side on desktop, stacked on mobile) -->
+                <!-- Brand & Other Inputs -->
                 <div class="w-full max-w-[600px] flex flex-col gap-4">
-
-                    <!-- Email input -->
-                    <div>
-                        <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">📧 Your Gmail (for specific brands)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gold/60">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
-                            </span>
-                            <input type="email" id="email-input" class="acc-input text-[clamp(13px,3vw,15px)] py-2.5 px-4 pl-9 w-full" placeholder="yourname@gmail.com">
-                        </div>
-                        <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-1">We'll reach out to discuss your preferred brands</p>
-                    </div>
-
                     <!-- Wish List / Specific Items input -->
                     <div>
                         <label class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px] mb-2 block">🏷️ Be Specific — What Do You Want?</label>
@@ -1097,23 +1084,6 @@
         });
 
         // ============================================
-        // EMAIL INPUT — Basic validation on blur
-        // ============================================
-        const emailInput = document.getElementById('email-input');
-        const savedEmail = sessionStorage.getItem('booking_email');
-        if (savedEmail) emailInput.value = savedEmail;
-
-        emailInput.addEventListener('blur', () => {
-            let email = emailInput.value.trim();
-            if (email.length > 0 && !email.includes('@')) {
-                emailInput.style.borderColor = '#ef4444';
-            } else {
-                emailInput.style.borderColor = '';
-            }
-            sessionStorage.setItem('booking_email', emailInput.value);
-        });
-
-        // ============================================
         // BRAND + OTHER INPUTS — Save on change
         // ============================================
         const brandInput = document.getElementById('brand-input');
@@ -1151,14 +1121,25 @@
         const aiMessage = document.getElementById('ai-message');
         const aiError = document.getElementById('ai-error');
 
+        // All available accessories (matches data-item attributes on the cards)
+        const ALL_ACCESSORIES = [
+            'Necklace', 'Hand Chains', 'Knuckle Rings', 'Bead Bracelets', 'Cross Bags',
+            'Shoulder Bags', 'Hand Bags', 'Caps',
+            'Lip Oil', 'Lip Gloss', 'Lip Liner', 'Nail Polish', 'Press-On Nails',
+            'Lip Balm', 'Pimple Patch', 'Face Mask',
+            'Perfumes', 'Perfume Oil', 'Body Mist', 'Body Spray',
+            'Jersey Headband', 'Jersey Scarf', 'Head Warmer', 'Beret', 'Claw Clip', 'Scrunchies', 'Glasses',
+            'Rechargeable Fans', 'Sippy Cups', 'Phone Suction'
+        ];
+
         aiBtn.addEventListener('click', async () => {
-            // Get values for the AI prompt
+            // Gather user info for the AI prompt
             const budget = budgetInput.value || 'not specified';
             const age = ageInput.value || 'not specified';
             const gender = genderInput.value || 'not specified';
-            const callType = sessionStorage.getItem('booking_service') || 'not specified';
+            const callType = sessionStorage.getItem('booking_service') || 'a surprise call';
 
-            // Validate — need at least a budget
+            // Need at least a budget for AI to work with
             if (budget === 'not specified') {
                 aiError.textContent = 'Please enter your budget first so AI can work with it!';
                 aiError.classList.remove('hidden');
@@ -1166,72 +1147,121 @@
             }
             aiError.classList.add('hidden');
 
-            // Show loading state
+            // Loading state — disable button, show spinner
             aiBtn.disabled = true;
             aiIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/></svg>';
             aiText.textContent = 'AI is thinking...';
 
             try {
-                // Build the prompt for Gemini
-                const prompt = `You are a luxury gift curator for ÉLÉGANT CALLS, a Nigerian gifting service.
-Given these details:
-- Budget: ₦${budget}
-- Recipient's age: ${age}
-- Recipient's gender: ${gender}
-- Call type (occasion): ${callType}
+                // Build a natural prompt — like asking a stylish friend for gift advice
+                const prompt = `You are a luxury gift curator for ÉLÉGANT CALLS, a Nigerian surprise gifting service.
 
-Available accessory categories: Jewelry & Fashion (Necklace, Hand Chains, Knuckle Rings, Bead Bracelets, Cross Bags), Beauty & Self-Care (Perfume Oils, Body Scrub, Lip Gloss, Lotion Set), Fragrances (For Her, For Him, Unisex), Style & Accessories (Watches, Sunglasses, Scarves, Hats), Extras & Gadgets (Phone Pouch, AirPod Case, Notebook, Water Bottle, Keychain), Bags & Totes (Tote Bag, Mini Purse, Backpack).
+A customer wants to send a gift along with their "${callType}" to a ${age !== 'not specified' ? age + '-year-old' : ''} ${gender !== 'not specified' ? gender : 'person'}. Their accessory budget is ₦${budget}.
 
-Recommend 3-5 specific accessories from the categories above that fit the budget and suit the recipient. Be concise — just list the items with a one-line reason each. Use warm, elegant language.`;
+Here are the ONLY accessories available (pick from this list only):
+Jewelry: Necklace, Hand Chains, Knuckle Rings, Bead Bracelets
+Bags: Cross Bags, Shoulder Bags, Hand Bags
+Beauty: Lip Oil, Lip Gloss, Lip Liner, Nail Polish, Press-On Nails, Lip Balm, Pimple Patch, Face Mask
+Fragrance: Perfumes, Perfume Oil, Body Mist, Body Spray
+Style: Jersey Headband, Jersey Scarf, Head Warmer, Beret, Claw Clip, Scrunchies, Glasses
+Extras: Caps, Rechargeable Fans, Sippy Cups, Phone Suction
 
-                // Call Gemini API (free tier)
+Pick 3 to 5 accessories from the list above that would make the best gift for this person. Consider the occasion, age, gender, and what fits the budget.
+
+IMPORTANT: On the FIRST LINE of your response, list ONLY the exact item names separated by commas, nothing else. Like: Necklace, Lip Gloss, Perfume Oil
+Then on the next lines, give a warm one-sentence reason for each pick.`;
+
+                // Call Gemini 2.0 Flash API (free tier)
                 const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDummyKeyReplace`,
+                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDummyKeyReplace',
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             contents: [{ parts: [{ text: prompt }] }],
                             generationConfig: {
-                                temperature: 0.8,
-                                maxOutputTokens: 300
+                                temperature: 0.7,
+                                maxOutputTokens: 400
                             }
                         })
                     }
                 );
 
                 if (!response.ok) {
-                    throw new Error(`API returned ${response.status}`);
+                    throw new Error('API returned ' + response.status);
                 }
 
                 const data = await response.json();
-                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI. Try again!';
+                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-                // Show results
-                aiResults.classList.remove('hidden');
-                aiMessage.textContent = aiResponse;
+                if (!aiResponse) {
+                    throw new Error('Empty response from AI');
+                }
 
-                // Auto-select recommended items if they match
-                const recommendedItems = aiResponse.split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line.length > 0);
+                // Parse the first line — it should be comma-separated item names
+                const lines = aiResponse.split('\n').filter(l => l.trim().length > 0);
+                const firstLine = lines[0].trim();
+                // Clean up: remove numbers, bullets, asterisks, extra spaces
+                const pickedNames = firstLine
+                    .replace(/^[\d]+[.)\-]\s*/g, '')   // remove leading "1. " or "1) " or "1- "
+                    .replace(/[*#]/g, '')                   // remove markdown bold/bullets
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0);
 
-                recommendedItems.forEach(line => {
-                    accItems.forEach(item => {
-                        const itemName = item.dataset.item;
-                        if (line.toLowerCase().includes(itemName.toLowerCase()) && !selectedAccessories.includes(itemName)) {
-                            selectedAccessories.push(itemName);
-                            item.classList.add('selected');
-                        }
+                // Auto-select matching items on the page
+                let autoSelected = [];
+                let notFound = [];
+                pickedNames.forEach(name => {
+                    // Try to find a matching acc-item (case-insensitive, partial match)
+                    const match = [...accItems].find(item => {
+                        const itemName = item.dataset.item.toLowerCase();
+                        const searchName = name.toLowerCase();
+                        return itemName === searchName || 
+                               itemName.includes(searchName) || 
+                               searchName.includes(itemName);
                     });
+                    if (match && !selectedAccessories.includes(match.dataset.item)) {
+                        selectedAccessories.push(match.dataset.item);
+                        match.classList.add('selected');
+                        autoSelected.push(match.dataset.item);
+                    } else if (!match) {
+                        notFound.push(name);
+                    }
                 });
+
+                // Update the summary count
                 updateAccSummary();
+
+                // Show the AI results
+                aiResults.classList.remove('hidden');
+
+                // Build display message
+                if (autoSelected.length > 0) {
+                    // Show the picked items as gold tags
+                    let msg = '<div class="mb-3"><span class="text-gold font-semibold">✧ AI picked for you:</span></div>';
+                    msg += '<div class="flex flex-wrap justify-center gap-2 mb-3">';
+                    autoSelected.forEach(item => {
+                        msg += '<span class="bg-gold/15 border border-gold/30 text-gold text-[clamp(11px,2.5vw,13px)] px-3 py-1 rounded-full font-semibold">' + item + '</span>';
+                    });
+                    msg += '</div>';
+                    // Show AI's reasons (remaining lines)
+                    const reasons = lines.slice(1).join(' ').replace(/[*#]/g, '').trim();
+                    if (reasons) {
+                        msg += '<p class="text-gray-text text-[clamp(11px,2.5vw,13px)] italic">' + reasons + '</p>';
+                    }
+                    msg += '<p class="text-gold-light text-[clamp(10px,2vw,11px)] mt-3">↑ You can adjust these — add or remove items above!</p>';
+                    aiMessage.innerHTML = msg;
+                } else {
+                    aiMessage.innerHTML = '<p class="text-gray-text">AI had trouble matching items. Please pick manually! 🤎</p>';
+                }
 
             } catch (err) {
                 aiError.textContent = 'AI is resting right now — please pick accessories manually! 🤎';
                 aiError.classList.remove('hidden');
                 console.error('AI Error:', err);
             } finally {
+                // Reset button to normal state
                 aiBtn.disabled = false;
                 aiIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z"/></svg>';
                 aiText.textContent = 'Let AI Choose For Me';
@@ -1239,7 +1269,8 @@ Recommend 3-5 specific accessories from the categories above that fit the budget
         });
 
         // ============================================
-        // SHOW PREVIOUS STEP SELECTIONS
+        //
+        // // SHOW PREVIOUS STEP SELECTIONS
         // ============================================
         const stepInfo = document.getElementById('step-info');
         const savedService = sessionStorage.getItem('booking_service');
@@ -1273,7 +1304,7 @@ Recommend 3-5 specific accessories from the categories above that fit the budget
                 sessionStorage.removeItem('booking_budget');
                 sessionStorage.removeItem('booking_brand');
                 sessionStorage.removeItem('booking_other');
-                sessionStorage.removeItem('booking_email');
+                
                 sessionStorage.removeItem('booking_pic_link');
             });
         }
