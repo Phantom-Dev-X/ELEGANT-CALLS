@@ -66,55 +66,12 @@
         menuLinks.forEach(link => link.addEventListener('click', () => closeMenu()));
         menuOverlay.addEventListener('click', () => closeMenu());
 
-        // ---- Package card selection ----
-        const presetCards = document.querySelectorAll('.pkg-select-card');
-        const customCard = document.querySelector('.custom-pkg-card');
-        const proceedSection = document.getElementById('proceed-section');
-        const selectedPkgEl = document.getElementById('selected-pkg');
-        const selectedPriceEl = document.getElementById('selected-price');
-        let selectedCard = null;
-
-        function selectCard(card, name, price) {
-            if (selectedCard) selectedCard.classList.remove('selected');
-            card.classList.add('selected');
-            selectedCard = card;
-            selectedPkgEl.textContent = name;
-            selectedPriceEl.textContent = price;
-            proceedSection.style.display = 'block';
+        // ---- Each "Select Package" button saves its package and navigates ----
+        // No card listener needed — the button IS the action
+        function selectPackage(name, price) {
             sessionStorage.setItem('booking_package', name);
             sessionStorage.setItem('booking_package_price', price);
-        }
-
-        presetCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const nameEl = card.querySelector('h3');
-                // Find the price element - it's the one with inline style color
-                const priceEl = card.querySelector('[style*="color:"]');
-                const name = nameEl ? nameEl.textContent.trim() : '';
-                const price = priceEl ? priceEl.textContent.trim() : '';
-                selectCard(card, name, price);
-            });
-        });
-
-        if (customCard) {
-            customCard.addEventListener('click', () => {
-                selectCard(customCard, 'Custom Package', 'Your Budget');
-            });
-        }
-
-        // Restore selection if user came back
-        const savedPkg = sessionStorage.getItem('booking_package');
-        if (savedPkg) {
-            if (savedPkg === 'Custom Package') {
-                if (customCard) customCard.click();
-            } else {
-                presetCards.forEach(card => {
-                    const nameEl = card.querySelector('h3');
-                    if (nameEl && nameEl.textContent.trim() === savedPkg) {
-                        card.click();
-                    }
-                });
-            }
+            window.location.href = 'booking-pastries.html';
         }
 
         // Show which service they picked in Step 1
@@ -407,33 +364,17 @@
         /* Package card selection */
         .pkg-select-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            cursor: pointer;
         }
         .pkg-select-card:hover { transform: translateY(-3px); }
-        .pkg-select-card.selected {
-            border-color: #C9A84C !important;
-            box-shadow: 0 0 25px rgba(201, 168, 76, 0.25);
-        }
-        .pkg-select-card.selected .select-indicator {
-            background: #C9A84C; border-color: #C9A84C;
-        }
-        .pkg-select-card.selected .select-check { opacity: 1; }
 
         /* Custom package card */
         .custom-pkg-card {
             border: 2px dashed #C9A84C/50;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
         .custom-pkg-card:hover {
             border-color: #C9A84C;
             box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
-        }
-        .custom-pkg-card.selected {
-            border-color: #C9A84C !important;
-            border-style: solid;
-            box-shadow: 0 0 25px rgba(201, 168, 76, 0.25);
-            background: rgba(201, 168, 76, 0.05);
         }
     </style>
 </head>
@@ -610,9 +551,9 @@
                         </ul>
 
                         <!-- Select Package Button -->
-                        <button class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #CD7F32; background: transparent; color: #CD7F32;">
+                        <a href="booking-pastries.html" onclick="selectPackage('Basic', '₦10,000'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #CD7F32; background: transparent; color: #CD7F32;">
                             Select Package
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -662,9 +603,9 @@
                         </ul>
 
                         <!-- Select Package Button -->
-                        <button class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #E8A0BF; background: transparent; color: #E8A0BF;">
+                        <a href="booking-pastries.html" onclick="selectPackage('Classique', '₦15,000'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #E8A0BF; background: transparent; color: #E8A0BF;">
                             Select Package
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -714,9 +655,9 @@
                         </ul>
 
                         <!-- Select Package Button -->
-                        <button class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #3B82F6; background: transparent; color: #3B82F6;">
+                        <a href="booking-pastries.html" onclick="selectPackage('Standard', '₦25,000'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #3B82F6; background: transparent; color: #3B82F6;">
                             Select Package
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -770,9 +711,9 @@
                         </ul>
 
                         <!-- Select Package Button -->
-                        <button class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #7C3AED; background: transparent; color: #7C3AED;">
+                        <a href="booking-pastries.html" onclick="selectPackage('Premium', '₦40,000'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center" style="border: 2px solid #7C3AED; background: transparent; color: #7C3AED;">
                             Select Package
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -838,9 +779,9 @@
                         </ul>
 
                         <!-- Select Package Button -->
-                        <button class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-black-shine text-center" style="background-color: #06B6D4; border: 2px solid #06B6D4;">
+                        <a href="booking-pastries.html" onclick="selectPackage('Diamond', '₦60,000'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-black-shine text-center" style="background-color: #06B6D4; border: 2px solid #06B6D4;">
                             Select Package
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -935,9 +876,9 @@
                     <p class="text-gray-text text-[clamp(12px,2.5vw,14px)] leading-relaxed mb-4">
                         Don't see what you want? Build your own package! Enter your budget and our AI will curate the perfect selection for you ✨
                     </p>
-                    <div class="select-indicator w-7 h-7 rounded-full border-2 border-gold/40 bg-transparent flex items-center justify-center transition-all duration-300 mt-auto">
-                        <svg class="select-check w-4 h-4 text-black-shine opacity-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
+                    <a href="booking-pastries.html" onclick="selectPackage('Custom Package', 'Your Budget'); return false;" class="book-btn block w-full font-bold tracking-[2px] uppercase py-3 rounded-lg text-[clamp(11px,2.5vw,13px)] transition-all hover:opacity-90 text-center border-2 border-dashed border-gold text-gold bg-transparent hover:bg-gold hover:text-black-shine mt-4">
+                            Select Package
+                        </a>
                 </div>
 
                 <!-- Tagline -->
@@ -1001,17 +942,6 @@
         <!-- ============================================
              PROCEED BUTTON
              ============================================ -->
-        <section class="px-5 py-8 text-center" id="proceed-section" style="display: none;">
-            <div class="max-w-[1100px] mx-auto">
-                <p class="text-gold font-semibold text-[clamp(12px,2.5vw,14px)] mb-4 uppercase tracking-[1px]">
-                    Selected: <span id="selected-pkg" class="text-white"></span> — <span id="selected-price" class="gold-gradient-text font-playfair font-bold"></span>
-                </p>
-                <a href="booking-pastries.html" id="proceed-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-4 px-12 rounded-lg text-[clamp(14px,3vw,16px)] inline-block transition-all hover:shadow-[0_6px_25px_rgba(201,168,76,0.3)] hover:-translate-y-0.5">
-                    Proceed →
-                </a>
-                <p class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-3">Step 3: Add Pastries & Treats</p>
-            </div>
-        </section>
 
     <!-- ============================================
          FOOTER — same as other pages
