@@ -334,17 +334,9 @@
                 <div class="summary-section" id="accessories-section">
                     <h3 class="text-gold text-[clamp(12px,2.8vw,14px)] font-bold uppercase tracking-[2px] mb-3">💍 Accessories</h3>
                     <div id="sum-accessories-list"></div>
-                    <div class="summary-row">
-                        <span class="label">Budget</span>
-                        <span class="value" id="sum-acc-budget">—</span>
-                    </div>
                     <div id="acc-wishlist-row" class="summary-row hidden">
-                        <span class="label">Wish List</span>
+                        <span class="label">Specific Requests</span>
                         <span class="value" id="sum-acc-wishlist">—</span>
-                    </div>
-                    <div id="acc-piclink-row" class="summary-row hidden">
-                        <span class="label">Picture Link</span>
-                        <span class="value text-gold-light underline" id="sum-acc-piclink">—</span>
                     </div>
                 </div>
 
@@ -680,9 +672,7 @@
 
         // --- ACCESSORIES ---
         const savedAcc = sessionStorage.getItem('booking_accessories');
-        const savedBudget = sessionStorage.getItem('booking_budget');
         const savedWishlist = sessionStorage.getItem('booking_brand');
-        const savedPicLink = sessionStorage.getItem('booking_pic_link');
 
         if (savedAcc) {
             try {
@@ -698,24 +688,13 @@
                 }
             } catch(e) {}
         }
-        if (savedBudget) {
-            document.getElementById('sum-acc-budget').textContent = '₦' + savedBudget;
-        } else {
-            document.getElementById('sum-acc-budget').textContent = 'Not specified';
-        }
         if (savedWishlist && savedWishlist.trim()) {
             document.getElementById('acc-wishlist-row').classList.remove('hidden');
             document.getElementById('sum-acc-wishlist').textContent = savedWishlist;
         }
-        if (savedPicLink && savedPicLink.trim()) {
-            document.getElementById('acc-piclink-row').classList.remove('hidden');
-            document.getElementById('sum-acc-piclink').textContent = savedPicLink;
-            document.getElementById('sum-acc-piclink').href = savedPicLink;
-            document.getElementById('sum-acc-piclink').target = '_blank';
-        }
 
         // Hide accessories section entirely if nothing selected
-        if ((!savedAcc || JSON.parse(savedAcc).length === 0) && !savedBudget) {
+        if ((!savedAcc || JSON.parse(savedAcc).length === 0) && !savedWishlist) {
             document.getElementById('accessories-section').style.display = 'none';
         }
 
@@ -795,14 +774,8 @@
                     }
                 } catch(e) {}
             }
-            if (savedBudget) {
-                msg += `   Budget: ₦${savedBudget}\n`;
-            }
             if (savedWishlist && savedWishlist.trim()) {
-                msg += `   Wish List: ${savedWishlist}\n`;
-            }
-            if (savedPicLink && savedPicLink.trim()) {
-                msg += `   Picture: ${savedPicLink}\n`;
+                msg += `   Specific: ${savedWishlist}\n`;
             }
             msg += `\n`;
 
