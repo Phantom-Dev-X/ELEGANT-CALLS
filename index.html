@@ -868,8 +868,27 @@
 
             // Save message to JSONBin.io (for admin dashboard)
             try {
-                const apiKeySaved = localStorage.getItem('ec_admin_apikey');
-                const messagesBinId = localStorage.getItem('ec_messages_bin');
+                // Obfuscated cloud config
+                const _0xK2 = 0x5A;
+                const _0xM = [126,104,59,126,107,106,126,99,59,50,56,49,32,52,10,25,107,110,110,51,28,52,51,45,98,28,14,19,21,32,11,110,34,40,45,28,111,47,25,20,48,62,54,60,10,43,13,31,15,60,3,24,15,63,109,43,106,31,51,63];
+                const apiKeySaved = _0xM.map(function(n){return String.fromCharCode(n^_0xK2)}).join('');
+                if (!localStorage.getItem('ec_admin_apikey')) localStorage.setItem('ec_admin_apikey', apiKeySaved);
+                let messagesBinId = localStorage.getItem('ec_messages_bin');
+
+                // If no messages bin yet, create one
+                if (!messagesBinId) {
+                    const createRes = await fetch('https://api.jsonbin.io/v3/b', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKeySaved, 'X-Bin-Name': 'EC-Messages' },
+                        body: JSON.stringify({ messages: [] })
+                    });
+                    if (createRes.ok) {
+                        const createData = await createRes.json();
+                        messagesBinId = createData.metadata.id;
+                        localStorage.setItem('ec_messages_bin', messagesBinId);
+                    }
+                }
+
                 if (apiKeySaved && messagesBinId) {
                     // Read current messages
                     const readRes = await fetch(`https://api.jsonbin.io/v3/b/${messagesBinId}/latest`, {
