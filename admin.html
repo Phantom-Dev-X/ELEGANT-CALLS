@@ -222,20 +222,38 @@
                 </section>
 
                 <!-- ============================================ -->
-                <!-- WHATSAPP NUMBER (Super Admins Only)            -->
+                <!-- WHATSAPP NUMBERS (Super Admins Only)           -->
                 <!-- ============================================ -->
                 <section id="whatsapp-config" class="border border-card-border rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8 hidden">
                     <h2 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4 flex items-center gap-2">
-                        📱 Order WhatsApp Number
+                        📱 WhatsApp Numbers
                     </h2>
-                    <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">This is the number customers are redirected to when they tap "Send to WhatsApp" on the booking summary. Enter with country code, no + sign.</p>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <input type="text" id="whatsapp-number-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="e.g. 2349029675308">
-                        <button id="save-whatsapp-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
-                            Save Number
-                        </button>
+
+                    <!-- Order WhatsApp Number -->
+                    <div class="mb-6 pb-6 border-b border-card-border">
+                        <h3 class="text-gold-light font-semibold text-[clamp(12px,2.5vw,14px)] mb-2">📦 Order Number</h3>
+                        <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">Customers are redirected here when they tap "Send to WhatsApp" on the booking summary.</p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="whatsapp-number-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="e.g. 2349029675308">
+                            <button id="save-whatsapp-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
+                                Save
+                            </button>
+                        </div>
+                        <p id="whatsapp-number-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
                     </div>
-                    <p id="whatsapp-number-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
+
+                    <!-- Support/Chat WhatsApp Number (floating button) -->
+                    <div>
+                        <h3 class="text-gold-light font-semibold text-[clamp(12px,2.5vw,14px)] mb-2">💬 Chat / Support Number</h3>
+                        <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">The floating WhatsApp button on every page redirects here. This is the number customers reach for general enquiries.</p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="support-number-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="e.g. 2349029675308">
+                            <button id="save-support-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
+                                Save
+                            </button>
+                        </div>
+                        <p id="support-number-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
+                    </div>
                 </section>
 
                 <!-- ============================================ -->
@@ -853,15 +871,17 @@
         // ============================================
         var CONFIG_BIN_ID = localStorage.getItem('ec_config_bin') || '';
 
-        /** Load the current WhatsApp number from config bin */
+        /** Load both WhatsApp numbers from config bin */
         async function loadWhatsAppConfig() {
-            var inputEl = document.getElementById('whatsapp-number-input');
-            var statusEl = document.getElementById('whatsapp-number-status');
+            var orderInput = document.getElementById('whatsapp-number-input');
+            var orderStatus = document.getElementById('whatsapp-number-status');
+            var supportInput = document.getElementById('support-number-input');
+            var supportStatus = document.getElementById('support-number-status');
 
-            if (!inputEl) return;
+            if (!orderInput) return;
 
-            // Default number
-            inputEl.placeholder = 'Loading...';
+            orderInput.placeholder = 'Loading...';
+            if (supportInput) supportInput.placeholder = 'Loading...';
 
             try {
                 // Ensure config bin exists
@@ -870,20 +890,38 @@
                 }
                 if (CONFIG_BIN_ID) {
                     var data = await readBin(CONFIG_BIN_ID);
+                    // Order number
                     if (data && data.whatsappNumber) {
-                        inputEl.value = data.whatsappNumber;
-                        statusEl.textContent = '✅ Current number: +' + data.whatsappNumber;
-                        statusEl.style.color = '#C9A84C';
+                        orderInput.value = data.whatsappNumber;
+                        orderStatus.textContent = '✅ Current: +' + data.whatsappNumber;
+                        orderStatus.style.color = '#C9A84C';
                     } else {
-                        inputEl.value = '2349029675308';
-                        statusEl.textContent = 'Using default number';
-                        statusEl.style.color = '#B8B8B8';
+                        orderInput.value = '2349029675308';
+                        orderStatus.textContent = 'Using default number';
+                        orderStatus.style.color = '#B8B8B8';
+                    }
+                    // Support/Chat number
+                    if (supportInput) {
+                        if (data && data.supportNumber) {
+                            supportInput.value = data.supportNumber;
+                            supportStatus.textContent = '✅ Current: +' + data.supportNumber;
+                            supportStatus.style.color = '#C9A84C';
+                        } else {
+                            supportInput.value = '2349029675308';
+                            supportStatus.textContent = 'Using default number';
+                            supportStatus.style.color = '#B8B8B8';
+                        }
                     }
                 }
             } catch(e) {
-                inputEl.value = '2349029675308';
-                statusEl.textContent = 'Using default number (could not load config)';
-                statusEl.style.color = '#B8B8B8';
+                orderInput.value = '2349029675308';
+                orderStatus.textContent = 'Using default (could not load config)';
+                orderStatus.style.color = '#B8B8B8';
+                if (supportInput) {
+                    supportInput.value = '2349029675308';
+                    supportStatus.textContent = 'Using default (could not load config)';
+                    supportStatus.style.color = '#B8B8B8';
+                }
             }
         }
 
@@ -898,7 +936,7 @@
                             'X-Master-Key': API_KEY,
                             'X-Bin-Name': 'EC-Config'
                         },
-                        body: JSON.stringify({ whatsappNumber: '2349029675308' })
+                        body: JSON.stringify({ whatsappNumber: '2349029675308', supportNumber: '2349029675308' })
                     });
                     if (res.ok) {
                         var data = await res.json();
@@ -911,41 +949,79 @@
             }
         }
 
-        /** Save WhatsApp number button handler */
+        /** Save a field to the config bin (merges with existing data) */
+        async function saveConfigField(field, value, statusEl) {
+            // Ensure config bin exists
+            if (!CONFIG_BIN_ID) {
+                await ensureConfigBin();
+            }
+            if (!CONFIG_BIN_ID) {
+                statusEl.textContent = '⚠️ Could not connect to cloud. Try again.';
+                statusEl.style.color = '#ef4444';
+                return false;
+            }
+            try {
+                // Read existing config, update one field, save back
+                var data = await readBin(CONFIG_BIN_ID);
+                data[field] = value;
+                await updateBin(CONFIG_BIN_ID, data);
+                return true;
+            } catch(e) {
+                return false;
+            }
+        }
+
+        /** Save Order WhatsApp number */
         document.getElementById('save-whatsapp-btn').addEventListener('click', async function() {
             var inputEl = document.getElementById('whatsapp-number-input');
             var statusEl = document.getElementById('whatsapp-number-status');
-            var number = inputEl.value.trim().replace(/[^0-9]/g, ''); // Remove non-digits
+            var number = inputEl.value.trim().replace(/[^0-9]/g, '');
 
             if (!number) {
                 statusEl.textContent = '⚠️ Please enter a phone number';
                 statusEl.style.color = '#ef4444';
                 return;
             }
-
             if (number.length < 10) {
-                statusEl.textContent = '⚠️ Number seems too short. Include country code (e.g. 2349029675308)';
+                statusEl.textContent = '⚠️ Number seems too short. Include country code.';
                 statusEl.style.color = '#ef4444';
                 return;
             }
 
-            // Ensure config bin exists
-            if (!CONFIG_BIN_ID) {
-                await ensureConfigBin();
-            }
-
-            if (!CONFIG_BIN_ID) {
-                statusEl.textContent = '⚠️ Could not connect to cloud. Try again.';
-                statusEl.style.color = '#ef4444';
-                return;
-            }
-
-            try {
-                await updateBin(CONFIG_BIN_ID, { whatsappNumber: number });
-                statusEl.textContent = '✅ WhatsApp number updated to +' + number;
+            var ok = await saveConfigField('whatsappNumber', number, statusEl);
+            if (ok) {
+                statusEl.textContent = '✅ Order number updated to +' + number;
                 statusEl.style.color = '#22c55e';
                 inputEl.value = number;
-            } catch(e) {
+            } else {
+                statusEl.textContent = '⚠️ Failed to save. Try again.';
+                statusEl.style.color = '#ef4444';
+            }
+        });
+
+        /** Save Support/Chat WhatsApp number */
+        document.getElementById('save-support-btn').addEventListener('click', async function() {
+            var inputEl = document.getElementById('support-number-input');
+            var statusEl = document.getElementById('support-number-status');
+            var number = inputEl.value.trim().replace(/[^0-9]/g, '');
+
+            if (!number) {
+                statusEl.textContent = '⚠️ Please enter a phone number';
+                statusEl.style.color = '#ef4444';
+                return;
+            }
+            if (number.length < 10) {
+                statusEl.textContent = '⚠️ Number seems too short. Include country code.';
+                statusEl.style.color = '#ef4444';
+                return;
+            }
+
+            var ok = await saveConfigField('supportNumber', number, statusEl);
+            if (ok) {
+                statusEl.textContent = '✅ Chat number updated to +' + number;
+                statusEl.style.color = '#22c55e';
+                inputEl.value = number;
+            } else {
                 statusEl.textContent = '⚠️ Failed to save. Try again.';
                 statusEl.style.color = '#ef4444';
             }
