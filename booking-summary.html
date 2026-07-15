@@ -140,6 +140,28 @@
             transform: translateY(0);
         }
 
+        /* WhatsApp confirmation modal overlay */
+        .whatsapp-modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .whatsapp-modal-overlay.show {
+            opacity: 1; pointer-events: auto;
+        }
+        .whatsapp-modal {
+            background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 20px;
+            padding: clamp(24px,6vw,40px); max-width: 420px; width: 100%;
+            text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .whatsapp-modal-overlay.show .whatsapp-modal {
+            transform: scale(1);
+        }
+
         /* Confetti animation */
         @keyframes confettiFall {
             0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
@@ -808,10 +830,67 @@
             return msg;
         }
 
-        // Build the WhatsApp URL
-        // wa.me links: https://wa.me/PHONENUMBER?text=ENCODED_MESSAGE
-        const whatsappURL = `https://wa.me/2349029675308?text=${encodeURIComponent(buildWhatsAppMessage())}`;
-        document.getElementById('whatsapp-btn').href = whatsappURL;
+        // ============================================
+        // WHATSAPP — Dynamic Number + Confirmation Modal
+        // ============================================
+
+        // Default WhatsApp number (fallback if config not set)
+        const DEFAULT_WHATSAPP = '2349029675308';
+        let whatsappNumber = DEFAULT_WHATSAPP;
+
+        // Fetch the WhatsApp number from JSONBin config
+        // Super admins can change it in the dashboard
+        (async function fetchWhatsAppConfig() {
+            try {
+                const _0xK2 = 0x5A;
+                const _0xC2 = [126,104,59,126,107,106,126,99,59,50,56,49,32,52,10,25,107,110,110,51,28,52,51,45,98,28,14,19,21,32,11,110,34,40,45,28,111,47,25,20,48,62,54,60,10,43,13,31,15,60,3,24,15,63,109,43,106,31,51,63];
+                const apiKey = _0xC2.map(function(n){return String.fromCharCode(n^_0xK2)}).join('');
+                const configBinId = localStorage.getItem('ec_config_bin');
+
+                if (configBinId) {
+                    const res = await fetch('https://api.jsonbin.io/v3/b/' + configBinId + '/latest', {
+                        headers: { 'X-Master-Key': apiKey }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.record && data.record.whatsappNumber) {
+                            whatsappNumber = data.record.whatsappNumber;
+                        }
+                    }
+                }
+            } catch(e) {
+                // Silently use default number
+            }
+
+            // Build the WhatsApp URL with the (possibly updated) number
+            updateWhatsAppLink();
+        })();
+
+        /** Build and set the WhatsApp link on the button */
+        function updateWhatsAppLink() {
+            const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(buildWhatsAppMessage())}`;
+            document.getElementById('whatsapp-btn').href = url;
+            document.getElementById('modal-whatsapp-btn').href = url;
+        }
+
+        /** Show the WhatsApp confirmation modal */
+        function showWhatsAppModal(e) {
+            e.preventDefault(); // Don't open WhatsApp yet!
+            document.getElementById('whatsapp-modal').classList.add('show');
+        }
+
+        /** Close the modal */
+        function closeWhatsAppModal() {
+            document.getElementById('whatsapp-modal').classList.remove('show');
+        }
+
+        // Make the main WhatsApp button show modal instead of going directly
+        document.getElementById('whatsapp-btn').addEventListener('click', showWhatsAppModal);
+
+        // Close modal if overlay is clicked (outside the modal card)
+        document.getElementById('whatsapp-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeWhatsAppModal();
+        });
 
         // ============================================
         // OBFUSCATED CLOUD CONFIG
@@ -970,6 +1049,39 @@
         // Launch confetti on page load!
         launchConfetti();
     </script>
+
+    <!-- ============================================ -->
+    <!-- WHATSAPP CONFIRMATION MODAL                   -->
+    <!-- ============================================ -->
+    <div id="whatsapp-modal" class="whatsapp-modal-overlay">
+        <div class="whatsapp-modal">
+            <!-- WhatsApp icon -->
+            <div class="w-16 h-16 rounded-full bg-[#25D366]/20 flex items-center justify-center mx-auto mb-5">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+
+            <h3 class="font-playfair font-bold text-white text-[clamp(18px,4vw,22px)] mb-3">Almost There! 🎉</h3>
+            <p class="text-gray-text text-[clamp(13px,3vw,15px)] leading-relaxed mb-2">
+                You'll be redirected to WhatsApp with a <span class="text-gold font-semibold">pre-filled message</span> containing your order details.
+            </p>
+            <p class="text-gray-text text-[clamp(13px,3vw,15px)] leading-relaxed mb-6">
+                Just tap <span class="text-[#25D366] font-bold">SEND</span> on WhatsApp and our customer care representative will attend to you shortly! 🤎
+            </p>
+
+            <div class="flex flex-col gap-3">
+                <!-- Open WhatsApp button -->
+                <a id="modal-whatsapp-btn" href="#" target="_blank" rel="noopener" class="whatsapp-btn text-white font-bold text-[clamp(13px,3vw,15px)] tracking-[1px] uppercase py-4 px-8 rounded-xl inline-flex items-center justify-center gap-2 w-full">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Open WhatsApp Now
+                </a>
+
+                <!-- Cancel button -->
+                <button onclick="closeWhatsAppModal()" class="text-gray-dark text-[clamp(12px,2.5vw,14px)] font-semibold uppercase tracking-[1px] hover:text-white transition-colors py-2">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

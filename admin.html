@@ -222,6 +222,23 @@
                 </section>
 
                 <!-- ============================================ -->
+                <!-- WHATSAPP NUMBER (Super Admins Only)            -->
+                <!-- ============================================ -->
+                <section id="whatsapp-config" class="border border-card-border rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8 hidden">
+                    <h2 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4 flex items-center gap-2">
+                        📱 Order WhatsApp Number
+                    </h2>
+                    <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">This is the number customers are redirected to when they tap "Send to WhatsApp" on the booking summary. Enter with country code, no + sign.</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="whatsapp-number-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="e.g. 2349029675308">
+                        <button id="save-whatsapp-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
+                            Save Number
+                        </button>
+                    </div>
+                    <p id="whatsapp-number-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
+                </section>
+
+                <!-- ============================================ -->
                 <!-- TABS: Messages | Orders | Manage Admins       -->
                 <!-- ============================================ -->
                 <div class="flex flex-wrap gap-3 mb-8">
@@ -648,6 +665,12 @@
             } else {
                 document.getElementById('admins-tab-btn').classList.add('hidden');
             }
+
+            // Show WhatsApp number config only for super admins
+            if (session.isSuper) {
+                document.getElementById('whatsapp-config').classList.remove('hidden');
+                loadWhatsAppConfig();
+            }
         }
 
         // ============================================
@@ -823,6 +846,110 @@
             if (!res.ok) throw new Error('Failed to update bin');
             return await res.json();
         }
+
+        // ============================================
+        // WHATSAPP NUMBER CONFIG (Super Admins Only)
+        // Stored in a config bin on JSONBin
+        // ============================================
+        var CONFIG_BIN_ID = localStorage.getItem('ec_config_bin') || '';
+
+        /** Load the current WhatsApp number from config bin */
+        async function loadWhatsAppConfig() {
+            var inputEl = document.getElementById('whatsapp-number-input');
+            var statusEl = document.getElementById('whatsapp-number-status');
+
+            if (!inputEl) return;
+
+            // Default number
+            inputEl.placeholder = 'Loading...';
+
+            try {
+                // Ensure config bin exists
+                if (!CONFIG_BIN_ID) {
+                    await ensureConfigBin();
+                }
+                if (CONFIG_BIN_ID) {
+                    var data = await readBin(CONFIG_BIN_ID);
+                    if (data && data.whatsappNumber) {
+                        inputEl.value = data.whatsappNumber;
+                        statusEl.textContent = '✅ Current number: +' + data.whatsappNumber;
+                        statusEl.style.color = '#C9A84C';
+                    } else {
+                        inputEl.value = '2349029675308';
+                        statusEl.textContent = 'Using default number';
+                        statusEl.style.color = '#B8B8B8';
+                    }
+                }
+            } catch(e) {
+                inputEl.value = '2349029675308';
+                statusEl.textContent = 'Using default number (could not load config)';
+                statusEl.style.color = '#B8B8B8';
+            }
+        }
+
+        /** Create the config bin if it doesn't exist */
+        async function ensureConfigBin() {
+            try {
+                if (!CONFIG_BIN_ID) {
+                    var res = await fetch('https://api.jsonbin.io/v3/b', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY,
+                            'X-Bin-Name': 'EC-Config'
+                        },
+                        body: JSON.stringify({ whatsappNumber: '2349029675308' })
+                    });
+                    if (res.ok) {
+                        var data = await res.json();
+                        CONFIG_BIN_ID = data.metadata.id;
+                        localStorage.setItem('ec_config_bin', CONFIG_BIN_ID);
+                    }
+                }
+            } catch(e) {
+                console.error('Error creating config bin:', e);
+            }
+        }
+
+        /** Save WhatsApp number button handler */
+        document.getElementById('save-whatsapp-btn').addEventListener('click', async function() {
+            var inputEl = document.getElementById('whatsapp-number-input');
+            var statusEl = document.getElementById('whatsapp-number-status');
+            var number = inputEl.value.trim().replace(/[^0-9]/g, ''); // Remove non-digits
+
+            if (!number) {
+                statusEl.textContent = '⚠️ Please enter a phone number';
+                statusEl.style.color = '#ef4444';
+                return;
+            }
+
+            if (number.length < 10) {
+                statusEl.textContent = '⚠️ Number seems too short. Include country code (e.g. 2349029675308)';
+                statusEl.style.color = '#ef4444';
+                return;
+            }
+
+            // Ensure config bin exists
+            if (!CONFIG_BIN_ID) {
+                await ensureConfigBin();
+            }
+
+            if (!CONFIG_BIN_ID) {
+                statusEl.textContent = '⚠️ Could not connect to cloud. Try again.';
+                statusEl.style.color = '#ef4444';
+                return;
+            }
+
+            try {
+                await updateBin(CONFIG_BIN_ID, { whatsappNumber: number });
+                statusEl.textContent = '✅ WhatsApp number updated to +' + number;
+                statusEl.style.color = '#22c55e';
+                inputEl.value = number;
+            } catch(e) {
+                statusEl.textContent = '⚠️ Failed to save. Try again.';
+                statusEl.style.color = '#ef4444';
+            }
+        });
 
         // ============================================
         // MESSAGES — Load & Display
