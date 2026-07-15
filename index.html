@@ -855,8 +855,8 @@
             });
         }
 
-        // --- Submit feedback (simple alert for now) ---
-        document.getElementById('submit-feedback').addEventListener('click', () => {
+        // --- Submit feedback ---
+        document.getElementById('submit-feedback').addEventListener('click', async () => {
             const name = document.querySelector('input[type="text"]').value.trim();
             const email = document.querySelector('input[type="email"]').value.trim();
             const feedback = document.querySelector('textarea').value.trim();
@@ -866,7 +866,50 @@
                 return;
             }
 
+            // Save message to JSONBin.io (for admin dashboard)
+            try {
+                const apiKeySaved = localStorage.getItem('ec_admin_apikey');
+                const messagesBinId = localStorage.getItem('ec_messages_bin');
+                if (apiKeySaved && messagesBinId) {
+                    // Read current messages
+                    const readRes = await fetch(`https://api.jsonbin.io/v3/b/${messagesBinId}/latest`, {
+                        headers: { 'X-Master-Key': apiKeySaved }
+                    });
+                    if (readRes.ok) {
+                        const currentData = await readRes.json();
+                        const messages = currentData.record.messages || [];
+                        // Add new message
+                        messages.push({
+                            name: name,
+                            email: email,
+                            feedback: feedback,
+                            rating: currentRating,
+                            date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                        });
+                        // Save back
+                        await fetch(`https://api.jsonbin.io/v3/b/${messagesBinId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Master-Key': apiKeySaved
+                            },
+                            body: JSON.stringify({ messages: messages })
+                        });
+                    }
+                }
+            } catch (err) {
+                // Silent fail — the alert still shows
+                console.log('Cloud message save skipped:', err.message);
+            }
+
             alert(`Thank you, ${name}! 🎉\n\nYour ${currentRating}-star feedback has been received.\nWe'll respond to you at ${email}.`);
+
+            // Clear form after submit
+            document.querySelector('input[type="text"]').value = '';
+            document.querySelector('input[type="email"]').value = '';
+            document.querySelector('textarea').value = '';
+            currentRating = 0;
+            document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active'));
         });
     </script>
 

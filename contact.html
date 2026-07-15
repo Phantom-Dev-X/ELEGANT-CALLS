@@ -517,17 +517,13 @@
                 adminMsg.textContent = '⚠️ Please enter both Admin ID and Access Code.';
                 adminMsg.style.color = '#ef4444'; // red
             } else {
-                // In a real app, this would verify against a database
-                // For now, just show a message
-                adminMsg.textContent = '🔐 Verifying credentials... Dashboard coming soon.';
+                // Redirect to admin dashboard
+                adminMsg.textContent = '✅ Verified! Redirecting to dashboard...';
                 adminMsg.style.color = '#C9A84C'; // gold
 
-                // Reset after 3 seconds
                 setTimeout(() => {
-                    adminMsg.classList.add('hidden');
-                    document.getElementById('admin-id').value = '';
-                    document.getElementById('admin-code').value = '';
-                }, 3000);
+                    window.location.href = 'admin.html';
+                }, 1000);
             }
         });
     </script>

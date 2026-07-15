@@ -814,6 +814,97 @@
         document.getElementById('whatsapp-btn').href = whatsappURL;
 
         // ============================================
+        // SAVE ORDER TO JSONBin.io (for admin dashboard)
+        // ============================================
+        // This runs silently in the background — if it fails, WhatsApp still works
+        (async function saveOrderToCloud() {
+            try {
+                const apiKey = 'API_KEY_PLACEHOLDER'; // Will be set by admin
+                // Read the bin IDs from a known location — we use localStorage as fallback
+                let ordersBinId = localStorage.getItem('ec_orders_bin');
+                let apiKeySaved = localStorage.getItem('ec_admin_apikey');
+
+                // If no admin setup yet, skip silently
+                if (!apiKeySaved || !ordersBinId) return;
+
+                // Build the order object to save
+                const orderData = {
+                    sessionId: sessionId,
+                    date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                    service: { name: savedService || '', price: savedService ? '₦' + (servicePrices[savedService] || 0).toLocaleString('en-NG') : '' },
+                    package: { name: savedPkg || '', price: (savedPkg && savedPkg !== 'Custom Package') ? '₦' + (packagePrices[savedPkg] || 0).toLocaleString('en-NG') : 'TBC' },
+                    pastries: [],
+                    accessories: [],
+                    specificRequests: '',
+                    recipient: {
+                        for: sessionStorage.getItem('booking_recipient') || '',
+                        date: sessionStorage.getItem('booking_date') || '',
+                        address: sessionStorage.getItem('booking_address') || '',
+                        message: sessionStorage.getItem('booking_message') || ''
+                    },
+                    sender: {
+                        name: sessionStorage.getItem('booking_name') || '',
+                        phone: sessionStorage.getItem('booking_phone') ? '+234 ' + sessionStorage.getItem('booking_phone') : '',
+                        email: sessionStorage.getItem('booking_details_email') || ''
+                    },
+                    total: '₦' + totalPrice.toLocaleString('en-NG') + '+'
+                };
+
+                // Add pastries
+                if (savedPastries) {
+                    try {
+                        const pastries = JSON.parse(savedPastries);
+                        pastries.forEach(p => {
+                            const price = pastryPrices[p.name] || 0;
+                            const qty = p.qty || 1;
+                            orderData.pastries.push({
+                                name: p.name,
+                                qty: qty,
+                                lineTotal: '₦' + (price * qty).toLocaleString('en-NG')
+                            });
+                        });
+                    } catch(e) {}
+                }
+
+                // Add accessories
+                if (savedAcc) {
+                    try {
+                        const acc = JSON.parse(savedAcc);
+                        orderData.accessories = acc;
+                    } catch(e) {}
+                }
+
+                // Add specific requests
+                const savedBrand = sessionStorage.getItem('booking_brand');
+                if (savedBrand && savedBrand.trim()) {
+                    orderData.specificRequests = savedBrand;
+                }
+
+                // Read current orders, append new one, save back
+                const readRes = await fetch(`https://api.jsonbin.io/v3/b/${ordersBinId}/latest`, {
+                    headers: { 'X-Master-Key': apiKeySaved }
+                });
+                if (!readRes.ok) return;
+                const currentData = await readRes.json();
+                const orders = currentData.record.orders || [];
+                orders.push(orderData);
+
+                await fetch(`https://api.jsonbin.io/v3/b/${ordersBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKeySaved
+                    },
+                    body: JSON.stringify({ orders: orders })
+                });
+                // Order saved silently — no alert needed
+            } catch (err) {
+                // Silent fail — WhatsApp message still works
+                console.log('Cloud save skipped:', err.message);
+            }
+        })();
+
+        // ============================================
         // NEW ORDER — Clear sessionStorage
         // ============================================
         document.getElementById('new-order-btn').addEventListener('click', () => {
