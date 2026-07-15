@@ -77,7 +77,7 @@
         .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2A2A2A; }
         .detail-row:last-child { border-bottom: none; }
         .detail-label { color: #B8B8B8; font-size: clamp(12px, 2.5vw, 14px); }
-        .detail-value { color: #E8D48B; font-size: clamp(12px, 2.5vw, 14px); font-weight: 600; text-align: right; max-width: 60%; }
+        .detail-value { color: #E8D48B; font-size: clamp(12px, 2.5vw, 14px); font-weight: 600; text-align: right; max-width: 60%; word-break: break-word; }
 
         /* Loading spinner */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -93,151 +93,648 @@
         /* Back link */
         .back-link { color: #666; font-size: clamp(12px, 2.5vw, 14px); transition: color 0.3s; }
         .back-link:hover { color: #C9A84C; }
+
+        /* Admin row in management */
+        .admin-row { border: 1px solid #2A2A2A; border-radius: 10px; padding: 12px 16px; background: #1A1A1A; transition: border-color 0.3s; }
+        .admin-row:hover { border-color: #C9A84C; }
+
+        /* Super badge */
+        .super-badge { background: linear-gradient(135deg, #C9A84C, #E8D48B); color: #0A0A0A; font-weight: 700; font-size: clamp(9px, 2vw, 11px); padding: 2px 8px; border-radius: 9999px; letter-spacing: 1px; text-transform: uppercase; }
+        .primary-badge { background: linear-gradient(135deg, #ef4444, #f97316); color: white; font-weight: 700; font-size: clamp(9px, 2vw, 11px); padding: 2px 8px; border-radius: 9999px; letter-spacing: 1px; text-transform: uppercase; }
+        .admin-badge { background: #2A2A2A; color: #B8B8B8; font-weight: 600; font-size: clamp(9px, 2vw, 11px); padding: 2px 8px; border-radius: 9999px; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* Login form styling */
+        .login-input {
+            background: #111; border: 1.5px solid #2A2A2A; border-radius: 0.75rem;
+            color: white; font-family: 'Inter', sans-serif; font-size: clamp(14px, 3vw, 16px);
+            padding: 0.85rem 1rem; width: 100%; outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .login-input:focus { border-color: #C9A84C; box-shadow: 0 0 15px rgba(201, 168, 76, 0.15); }
+        .login-input::placeholder { color: #555; }
+
+        /* Toggle switch */
+        .toggle-switch { position: relative; width: 40px; height: 22px; cursor: pointer; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #2A2A2A; border-radius: 22px; transition: 0.3s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; bottom: 3px; background: #666; border-radius: 50%; transition: 0.3s; }
+        .toggle-switch input:checked + .toggle-slider { background: linear-gradient(135deg, #C9A84C, #E8D48B); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); background: #0A0A0A; }
+
+        /* Danger button */
+        .btn-danger { background: transparent; border: 1px solid #ef4444; color: #ef4444; transition: all 0.3s; }
+        .btn-danger:hover { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
 
     <!-- ============================================ -->
-    <!-- HEADER / NAV                                  -->
+    <!-- LOGIN GATE — shown when no active session     -->
     <!-- ============================================ -->
-    <nav class="bg-dark border-b border-card-border px-5 py-4">
-        <div class="max-w-[1100px] mx-auto flex items-center justify-between">
-            <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(18px,4vw,24px)] tracking-[2px]">ÉLÉGANT</a>
-            <div class="flex items-center gap-4">
-                <span class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px]">🔐 Admin</span>
+    <div id="login-gate" class="min-h-screen flex items-center justify-center px-4">
+        <div class="w-full max-w-[420px]">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(22px,5vw,30px)] tracking-[3px] inline-block">ÉLÉGANT</a>
+                <p class="text-gray-dark text-[clamp(11px,2.5vw,13px)] mt-2 uppercase tracking-[2px]">Admin Access</p>
+            </div>
+
+            <!-- Login form card -->
+            <div class="border border-card-border rounded-2xl bg-card/50 p-[clamp(20px,5vw,32px)]">
+                <h2 class="font-playfair font-bold text-white text-[clamp(18px,4vw,22px)] mb-2">Dashboard Login</h2>
+                <p class="text-gray-dark text-[clamp(11px,2.5vw,13px)] mb-6">Enter your admin credentials to continue</p>
+
+                <form id="login-form" class="flex flex-col gap-4">
+                    <!-- Admin ID -->
+                    <div>
+                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Admin ID</label>
+                        <input type="text" id="login-username" class="login-input" placeholder="Enter your admin ID" autocomplete="off" required>
+                    </div>
+
+                    <!-- Access Code -->
+                    <div>
+                        <label class="text-gold text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-2 block">Access Code</label>
+                        <input type="password" id="login-password" class="login-input" placeholder="Enter your access code" required>
+                    </div>
+
+                    <!-- Error message -->
+                    <p id="login-error" class="text-red-400 text-[clamp(11px,2.5vw,13px)] hidden"></p>
+
+                    <!-- Login button -->
+                    <button type="submit" id="login-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[2px] uppercase py-3.5 px-6 rounded-lg text-[clamp(13px,3vw,15px)] w-full transition-all hover:opacity-90 mt-2">
+                        Access Dashboard
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <a href="contact.html" class="text-gray-dark text-[clamp(11px,2.5vw,12px)] hover:text-gold transition-colors">← Back to Contact</a>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 
     <!-- ============================================ -->
-    <!-- MAIN CONTENT                                  -->
+    <!-- DASHBOARD — shown after successful login      -->
     <!-- ============================================ -->
-    <main class="px-4 md:px-5 py-8">
-        <div class="max-w-[900px] mx-auto">
+    <div id="dashboard" class="hidden">
 
-            <!-- Back link -->
-            <a href="contact.html" class="back-link inline-flex items-center gap-2 mb-6">
-                ← Back to Contact
-            </a>
-
-            <!-- Page title -->
-            <h1 class="font-playfair font-bold gold-gradient-text text-[clamp(24px,6vw,36px)] tracking-[2px] mb-2">Admin Dashboard</h1>
-            <p class="text-gray-text font-cormorant italic text-[clamp(14px,3vw,18px)] mb-8">View messages & look up orders</p>
-
-            <!-- ============================================ -->
-            <!-- SETTINGS: JSONBin API Key                     -->
-            <!-- ============================================ -->
-            <section class="border border-card-border rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8">
-                <h2 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4 flex items-center gap-2">
-                    ⚙️ Settings
-                </h2>
-                <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">Paste your JSONBin.io API Master Key to load data. Get one free at <a href="https://jsonbin.io" target="_blank" class="text-gold underline">jsonbin.io</a></p>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="password" id="api-key-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="Paste your JSONBin API Master Key...">
-                    <button id="save-key-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
-                        Save Key
-                    </button>
+        <!-- ============================================ -->
+        <!-- HEADER / NAV                                  -->
+        <!-- ============================================ -->
+        <nav class="bg-dark border-b border-card-border px-5 py-4">
+            <div class="max-w-[1100px] mx-auto flex items-center justify-between">
+                <a href="index.html" class="font-playfair font-bold gold-gradient-text text-[clamp(18px,4vw,24px)] tracking-[2px]">ÉLÉGANT</a>
+                <div class="flex items-center gap-3">
+                    <span class="text-gold text-[clamp(11px,2.5vw,13px)] font-semibold uppercase tracking-[1px]">🔐 Admin</span>
+                    <span class="text-gray-dark text-[clamp(10px,2vw,12px)]">|</span>
+                    <span id="admin-name-display" class="text-gold-light text-[clamp(11px,2.5vw,13px)] font-semibold"></span>
+                    <button onclick="logout()" class="text-gray-dark text-[clamp(10px,2vw,12px)] hover:text-red-400 transition-colors uppercase tracking-[1px] font-semibold">Logout</button>
                 </div>
-                <p id="key-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
-            </section>
-
-            <!-- ============================================ -->
-            <!-- TABS: Messages | Order Lookup                 -->
-            <!-- ============================================ -->
-            <div class="flex gap-3 mb-8">
-                <button class="tab-btn active px-5 py-2.5 rounded-lg text-[clamp(12px,2.5vw,14px)] tracking-[1px]" data-tab="messages" onclick="switchTab('messages')">
-                    💬 Messages
-                </button>
-                <button class="tab-btn px-5 py-2.5 rounded-lg text-[clamp(12px,2.5vw,14px)] tracking-[1px]" data-tab="orders" onclick="switchTab('orders')">
-                    🔍 Order Lookup
-                </button>
             </div>
+        </nav>
 
-            <!-- ============================================ -->
-            <!-- MESSAGES TAB                                  -->
-            <!-- ============================================ -->
-            <div id="messages-tab">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)]">Feedback Messages</h3>
-                    <button id="refresh-msgs-btn" onclick="loadMessages()" class="text-gold text-[clamp(11px,2vw,12px)] font-semibold uppercase tracking-[1px] hover:text-gold-light transition-colors">
-                        ↻ Refresh
-                    </button>
-                </div>
+        <!-- ============================================ -->
+        <!-- MAIN CONTENT                                  -->
+        <!-- ============================================ -->
+        <main class="px-4 md:px-5 py-8">
+            <div class="max-w-[900px] mx-auto">
 
-                <!-- Messages list -->
-                <div id="messages-list" class="flex flex-col gap-4">
-                    <div class="text-center py-12 text-gray-dark">
-                        <p class="text-[clamp(13px,3vw,16px)]">Enter your API key above to load messages</p>
+                <!-- Back link -->
+                <a href="contact.html" class="back-link inline-flex items-center gap-2 mb-6">
+                    ← Back to Contact
+                </a>
+
+                <!-- Page title -->
+                <h1 class="font-playfair font-bold gold-gradient-text text-[clamp(24px,6vw,36px)] tracking-[2px] mb-2">Admin Dashboard</h1>
+                <p class="text-gray-text font-cormorant italic text-[clamp(14px,3vw,18px)] mb-8">View messages, look up orders & manage admins</p>
+
+                <!-- ============================================ -->
+                <!-- SETTINGS: JSONBin API Key                     -->
+                <!-- ============================================ -->
+                <section class="border border-card-border rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8">
+                    <h2 class="text-gold font-bold text-[clamp(14px,3vw,18px)] tracking-[1px] mb-4 flex items-center gap-2">
+                        ⚙️ Settings
+                    </h2>
+                    <p class="text-gray-dark text-[clamp(11px,2vw,12px)] mb-3">Paste your JSONBin.io API Master Key to load data. Get one free at <a href="https://jsonbin.io" target="_blank" class="text-gold underline">jsonbin.io</a></p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="password" id="api-key-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] flex-1" placeholder="Paste your JSONBin API Master Key...">
+                        <button id="save-key-btn" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-2.5 px-6 rounded-lg text-[clamp(11px,2.5vw,13px)] shrink-0 transition-all hover:opacity-90">
+                            Save Key
+                        </button>
                     </div>
-                </div>
-            </div>
+                    <p id="key-status" class="text-gray-dark text-[clamp(10px,2vw,11px)] mt-2"></p>
+                </section>
 
-            <!-- ============================================ -->
-            <!-- ORDERS TAB                                    -->
-            <!-- ============================================ -->
-            <div id="orders-tab" class="hidden">
-                <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)] mb-4">Look Up an Order</h3>
-
-                <!-- Session ID input -->
-                <div class="flex flex-col sm:flex-row gap-3 mb-6">
-                    <input type="text" id="session-id-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-3 text-white text-[clamp(14px,3vw,16px)] font-semibold flex-1" placeholder="Enter Session ID e.g. EC-ABC123">
-                    <button onclick="lookupOrder()" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-3 px-6 rounded-lg text-[clamp(12px,2.5vw,14px)] shrink-0 transition-all hover:opacity-90">
-                        Find Order
+                <!-- ============================================ -->
+                <!-- TABS: Messages | Orders | Manage Admins       -->
+                <!-- ============================================ -->
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <button class="tab-btn active px-5 py-2.5 rounded-lg text-[clamp(12px,2.5vw,14px)] tracking-[1px]" data-tab="messages" onclick="switchTab('messages')">
+                        💬 Messages
+                    </button>
+                    <button class="tab-btn px-5 py-2.5 rounded-lg text-[clamp(12px,2.5vw,14px)] tracking-[1px]" data-tab="orders" onclick="switchTab('orders')">
+                        🔍 Order Lookup
+                    </button>
+                    <button id="admins-tab-btn" class="tab-btn px-5 py-2.5 rounded-lg text-[clamp(12px,2.5vw,14px)] tracking-[1px] hidden" data-tab="admins" onclick="switchTab('admins')">
+                        👥 Manage Admins
                     </button>
                 </div>
 
-                <!-- Order result -->
-                <div id="order-result"></div>
-
-                <!-- Recent orders -->
-                <div class="mt-10">
-                    <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)] mb-4 flex items-center gap-2">
-                        📋 Recent Orders
-                        <button onclick="loadOrders()" class="text-gold-light text-[clamp(11px,2vw,12px)] font-semibold uppercase tracking-[1px] hover:text-white transition-colors">
+                <!-- ============================================ -->
+                <!-- MESSAGES TAB                                  -->
+                <!-- ============================================ -->
+                <div id="messages-tab">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)]">Feedback Messages</h3>
+                        <button onclick="loadMessages()" class="text-gold text-[clamp(11px,2vw,12px)] font-semibold uppercase tracking-[1px] hover:text-gold-light transition-colors">
                             ↻ Refresh
                         </button>
-                    </h3>
-                    <div id="recent-orders" class="flex flex-col gap-3">
-                        <div class="text-center py-8 text-gray-dark">
-                            <p class="text-[clamp(13px,3vw,16px)]">Enter your API key above to load orders</p>
+                    </div>
+                    <div id="messages-list" class="flex flex-col gap-4">
+                        <div class="text-center py-12 text-gray-dark">
+                            <p class="text-[clamp(13px,3vw,16px)]">Enter your API key above to load messages</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    </main>
+                <!-- ============================================ -->
+                <!-- ORDERS TAB                                    -->
+                <!-- ============================================ -->
+                <div id="orders-tab" class="hidden">
+                    <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)] mb-4">Look Up an Order</h3>
+
+                    <!-- Session ID input -->
+                    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                        <input type="text" id="session-id-input" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-3 text-white text-[clamp(14px,3vw,16px)] font-semibold flex-1" placeholder="Enter Session ID e.g. EC-ABC123">
+                        <button onclick="lookupOrder()" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-3 px-6 rounded-lg text-[clamp(12px,2.5vw,14px)] shrink-0 transition-all hover:opacity-90">
+                            Find Order
+                        </button>
+                    </div>
+
+                    <!-- Order result -->
+                    <div id="order-result"></div>
+
+                    <!-- Recent orders -->
+                    <div class="mt-10">
+                        <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)] mb-4 flex items-center gap-2">
+                            📋 Recent Orders
+                            <button onclick="loadOrders()" class="text-gold-light text-[clamp(11px,2vw,12px)] font-semibold uppercase tracking-[1px] hover:text-white transition-colors">
+                                ↻ Refresh
+                            </button>
+                        </h3>
+                        <div id="recent-orders" class="flex flex-col gap-3">
+                            <div class="text-center py-8 text-gray-dark">
+                                <p class="text-[clamp(13px,3vw,16px)]">Enter your API key above to load orders</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- ADMINS TAB (SUPER ADMINS ONLY)                -->
+                <!-- ============================================ -->
+                <div id="admins-tab" class="hidden">
+                    <h3 class="text-gold font-semibold text-[clamp(14px,3vw,16px)] mb-4">👥 Admin Management</h3>
+                    <p class="text-gray-text text-[clamp(12px,2.5vw,14px)] mb-6">Create new admins, grant or revoke super privileges, and manage access.</p>
+
+                    <!-- Create new admin form -->
+                    <div class="border border-gold/30 rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)] mb-8">
+                        <h4 class="text-gold-light font-bold text-[clamp(13px,3vw,15px)] tracking-[1px] mb-4">➕ Create New Admin</h4>
+
+                        <div class="flex flex-col gap-4">
+                            <div>
+                                <label class="text-gray-text text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-1.5 block">Username / Admin ID</label>
+                                <input type="text" id="new-admin-username" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] w-full" placeholder="e.g. john_admin">
+                            </div>
+                            <div>
+                                <label class="text-gray-text text-[clamp(10px,2.2vw,12px)] font-semibold uppercase tracking-[1px] mb-1.5 block">Access Code (Password)</label>
+                                <input type="text" id="new-admin-password" class="admin-input bg-dark border border-card-border rounded-lg px-4 py-2.5 text-white text-[clamp(13px,2.5vw,15px)] w-full" placeholder="Choose a strong access code">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="new-admin-super">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="text-gray-text text-[clamp(12px,2.5vw,14px)]">Grant Super Admin privileges</span>
+                            </div>
+                            <div id="create-admin-error" class="text-red-400 text-[clamp(11px,2.5vw,13px)] hidden"></div>
+                            <div id="create-admin-success" class="text-green-400 text-[clamp(11px,2.5vw,13px)] hidden"></div>
+                            <button onclick="createAdmin()" class="gold-gradient-bg text-black-shine font-bold tracking-[1px] uppercase py-3 px-6 rounded-lg text-[clamp(12px,2.5vw,14px)] w-full transition-all hover:opacity-90">
+                                Create Admin
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Existing admins list -->
+                    <div>
+                        <h4 class="text-gold-light font-bold text-[clamp(13px,3vw,15px)] tracking-[1px] mb-4">📋 Current Admins</h4>
+                        <div id="admin-list" class="flex flex-col gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
 
     <!-- ============================================ -->
     <!-- JAVASCRIPT                                    -->
     <!-- ============================================ -->
     <script>
         // ============================================
-        // JSONBin.io CONFIG
+        // OBFUSCATED AUTH MODULE
+        // DO NOT refactor, beautify, or rename these
+        // variables — they protect the primary admin
+        // credentials from casual code inspection.
         // ============================================
-        // Bin IDs — these get created automatically on first use
-        // or you can paste your own bin IDs here
-        let API_KEY = localStorage.getItem('ec_admin_apikey') || '';
-        let ORDERS_BIN_ID = localStorage.getItem('ec_orders_bin') || '';
-        let MESSAGES_BIN_ID = localStorage.getItem('ec_messages_bin') || '';
 
-        // Restore API key to input
-        const apiKeyInput = document.getElementById('api-key-input');
-        const keyStatus = document.getElementById('key-status');
-        if (API_KEY) {
-            apiKeyInput.value = API_KEY;
-            keyStatus.textContent = '✅ API key saved in browser';
-            keyStatus.style.color = '#C9A84C';
+        // XOR cipher seed — used to decode the primary identifier
+        const _0xK = 0x5A;
+
+        // Obfuscated primary admin identifier (SHA-256 hash, XOR-encoded)
+        // Decoding: each value XOR'd with _0xK, then joined as string
+        const _0xP = [105,62,106,57,60,99,98,98,104,107,99,107,107,57,104,106,110,108,104,60,104,63,109,56,57,108,106,111,110,108,107,59,59,107,110,99,108,63,59,62,111,99,111,111,98,60,108,111,104,57,111,107,98,110,108,62,105,107,62,107,60,108,59,109];
+
+        // Decode XOR-encoded array → plain string
+        function _0xD(a) { return a.map(function(n){return String.fromCharCode(n^_0xK)}).join(''); }
+
+        // Get the primary admin identifier (SHA-256 hash of username)
+        function _0xI() { return _0xD(_0xP); }
+
+        // Dynamic secondary token — changes periodically based on system clock
+        function _0xT() {
+            var d = new Date();
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            return '' + y + m + dd;
         }
 
+        // Compute SHA-256 hash of a string → returns hex string
+        // Uses the Web Crypto API (built into all modern browsers)
+        async function sha256(str) {
+            var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+        }
+
+        // ============================================
+        // SESSION MANAGEMENT
+        // Uses sessionStorage — clears when browser tab closes
+        // ============================================
+
+        /** Get current admin session, or null if not logged in */
+        function getSession() {
+            try {
+                var raw = sessionStorage.getItem('ec_admin_session');
+                return raw ? JSON.parse(raw) : null;
+            } catch(e) { return null; }
+        }
+
+        /** Save admin session after successful login */
+        function setSession(data) {
+            sessionStorage.setItem('ec_admin_session', JSON.stringify(data));
+        }
+
+        /** Clear session and return to login */
+        function logout() {
+            sessionStorage.removeItem('ec_admin_session');
+            showLoginGate();
+        }
+
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+
+        /**
+         * authenticate(username, password) — main auth function
+         *
+         * How it works:
+         * 1. Hash the username with SHA-256
+         * 2. If the hash matches the primary admin's hash → check dynamic password
+         * 3. Otherwise, check against stored admin accounts in localStorage
+         *
+         * The primary admin's username is NEVER stored as plain text.
+         * The primary admin's password is computed from today's date.
+         */
+        async function authenticate(username, password) {
+            if (!username || !password) {
+                return { success: false, error: 'Please enter both Admin ID and Access Code.' };
+            }
+
+            // Hash the input username
+            var uHash = await sha256(username);
+
+            // Check against primary admin
+            if (uHash === _0xI()) {
+                // Username matches primary admin
+                // Now verify the dynamic password
+                var pHash = await sha256(password);
+                var expectedPHash = await sha256(_0xT());
+
+                if (pHash === expectedPHash) {
+                    return {
+                        success: true,
+                        username: username,
+                        isSuper: true,    // Primary admin is always super
+                        isPrimary: true    // Cannot be deleted
+                    };
+                } else {
+                    return { success: false, error: 'Invalid access code. Try again.' };
+                }
+            }
+
+            // Check against stored admins in localStorage
+            var admins = getAdmins();
+            var inputPHash = await sha256(password);
+            var admin = admins.find(function(a) {
+                return a.username === username && a.passwordHash === inputPHash;
+            });
+
+            if (admin) {
+                return {
+                    success: true,
+                    username: admin.username,
+                    isSuper: admin.isSuper,
+                    isPrimary: false
+                };
+            }
+
+            return { success: false, error: 'Invalid Admin ID or Access Code.' };
+        }
+
+        // ============================================
+        // STORED ADMINS — localStorage
+        // ============================================
+
+        /** Get all stored admin accounts (NOT the primary admin) */
+        function getAdmins() {
+            try {
+                return JSON.parse(localStorage.getItem('ec_admins') || '[]');
+            } catch(e) { return []; }
+        }
+
+        /** Save admin accounts array to localStorage */
+        function saveAdmins(admins) {
+            localStorage.setItem('ec_admins', JSON.stringify(admins));
+        }
+
+        /**
+         * createAdmin() — called when super admin fills the form
+         * Hashes the password with SHA-256 before storing
+         */
+        async function createAdmin() {
+            var username = document.getElementById('new-admin-username').value.trim();
+            var password = document.getElementById('new-admin-password').value.trim();
+            var isSuper = document.getElementById('new-admin-super').checked;
+            var errorEl = document.getElementById('create-admin-error');
+            var successEl = document.getElementById('create-admin-success');
+
+            // Hide previous messages
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            // Validate inputs
+            if (!username || !password) {
+                errorEl.textContent = '⚠️ Please enter both username and access code.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (username.length < 3) {
+                errorEl.textContent = '⚠️ Username must be at least 3 characters.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (password.length < 4) {
+                errorEl.textContent = '⚠️ Access code must be at least 4 characters.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Check if username conflicts with primary admin
+            var uHash = await sha256(username);
+            if (uHash === _0xI()) {
+                errorEl.textContent = '⚠️ This username is reserved. Choose a different one.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Check if username already exists among stored admins
+            var admins = getAdmins();
+            if (admins.find(function(a) { return a.username === username; })) {
+                errorEl.textContent = '⚠️ An admin with this username already exists.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Hash the password and store
+            var passwordHash = await sha256(password);
+            var newAdmin = {
+                id: 'admin_' + Date.now(),
+                username: username,
+                passwordHash: passwordHash,
+                isSuper: isSuper,
+                createdBy: getSession().username,
+                createdAt: new Date().toISOString()
+            };
+
+            admins.push(newAdmin);
+            saveAdmins(admins);
+
+            // Clear form
+            document.getElementById('new-admin-username').value = '';
+            document.getElementById('new-admin-password').value = '';
+            document.getElementById('new-admin-super').checked = false;
+
+            // Show success
+            successEl.textContent = '✅ Admin "' + escapeHtml(username) + '" created successfully!';
+            successEl.classList.remove('hidden');
+            setTimeout(function() { successEl.classList.add('hidden'); }, 4000);
+
+            // Refresh admin list
+            renderAdminList();
+        }
+
+        /** Toggle super admin privileges for a stored admin */
+        function toggleSuperAdmin(adminId) {
+            var admins = getAdmins();
+            var admin = admins.find(function(a) { return a.id === adminId; });
+            if (admin) {
+                admin.isSuper = !admin.isSuper;
+                saveAdmins(admins);
+                renderAdminList();
+            }
+        }
+
+        /** Delete a stored admin account */
+        function deleteAdmin(adminId) {
+            var admins = getAdmins();
+            admins = admins.filter(function(a) { return a.id !== adminId; });
+            saveAdmins(admins);
+            renderAdminList();
+        }
+
+        /** Render the list of all admins (primary + stored) */
+        function renderAdminList() {
+            var listEl = document.getElementById('admin-list');
+            var session = getSession();
+            if (!listEl) return;
+
+            var html = '';
+
+            // Primary admin (always shown first, cannot be modified)
+            html += '<div class="admin-row flex flex-col sm:flex-row sm:items-center justify-between gap-3">';
+            html += '  <div class="flex items-center gap-3 flex-wrap">';
+            html += '    <span class="text-gold font-bold text-[clamp(13px,3vw,15px)]">' + escapeHtml(session ? session.username : 'Primary') + '</span>';
+            html += '    <span class="super-badge">SUPER</span>';
+            html += '    <span class="primary-badge">PRIMARY</span>';
+            html += '  </div>';
+            html += '  <span class="text-gray-dark text-[clamp(10px,2vw,11px)]">Cannot be modified</span>';
+            html += '</div>';
+
+            // Stored admins
+            var admins = getAdmins();
+            if (admins.length === 0) {
+                html += '<div class="text-center py-8 text-gray-dark">';
+                html += '  <p class="text-[clamp(13px,3vw,16px)]">No additional admins yet</p>';
+                html += '  <p class="text-[clamp(11px,2vw,13px)] mt-2">Use the form above to create new admins</p>';
+                html += '</div>';
+            } else {
+                admins.forEach(function(admin) {
+                    html += '<div class="admin-row flex flex-col sm:flex-row sm:items-center justify-between gap-3">';
+                    html += '  <div class="flex items-center gap-3 flex-wrap">';
+                    html += '    <span class="text-white font-semibold text-[clamp(13px,3vw,15px)]">' + escapeHtml(admin.username) + '</span>';
+                    if (admin.isSuper) {
+                        html += '    <span class="super-badge">SUPER</span>';
+                    } else {
+                        html += '    <span class="admin-badge">ADMIN</span>';
+                    }
+                    html += '    <span class="text-gray-dark text-[clamp(9px,2vw,11px)]">Created by ' + escapeHtml(admin.createdBy || 'unknown') + '</span>';
+                    html += '  </div>';
+                    html += '  <div class="flex items-center gap-3">';
+                    // Toggle super
+                    html += '    <label class="toggle-switch">';
+                    html += '      <input type="checkbox"' + (admin.isSuper ? ' checked' : '') + ' onchange="toggleSuperAdmin(\'' + admin.id + '\')">';
+                    html += '      <span class="toggle-slider"></span>';
+                    html += '    </label>';
+                    html += '    <span class="text-gray-dark text-[clamp(10px,2vw,11px)]">Super</span>';
+                    // Delete button
+                    html += '    <button onclick="deleteAdmin(\'' + admin.id + '\')" class="btn-danger px-3 py-1 rounded-lg text-[clamp(10px,2vw,12px)] uppercase tracking-[1px] font-semibold">Delete</button>';
+                    html += '  </div>';
+                    html += '</div>';
+                });
+            }
+
+            listEl.innerHTML = html;
+        }
+
+        // ============================================
+        // UI — SHOW LOGIN vs DASHBOARD
+        // ============================================
+
+        function showLoginGate() {
+            document.getElementById('login-gate').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+        }
+
+        function showDashboard(session) {
+            document.getElementById('login-gate').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            // Show admin name in header
+            document.getElementById('admin-name-display').textContent = session.username;
+
+            // Show Manage Admins tab only for super admins
+            if (session.isSuper) {
+                document.getElementById('admins-tab-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('admins-tab-btn').classList.add('hidden');
+            }
+
+            // Load API key if it exists
+            if (API_KEY) {
+                document.getElementById('api-key-input').value = API_KEY;
+                document.getElementById('key-status').textContent = '✅ API key saved in browser';
+                document.getElementById('key-status').style.color = '#C9A84C';
+            }
+        }
+
+        // ============================================
+        // LOGIN FORM HANDLER
+        // ============================================
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var username = document.getElementById('login-username').value.trim();
+            var password = document.getElementById('login-password').value.trim();
+            var errorEl = document.getElementById('login-error');
+            var loginBtn = document.getElementById('login-btn');
+
+            // Hide previous error
+            errorEl.classList.add('hidden');
+
+            // Disable button while processing
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Verifying...';
+
+            try {
+                var result = await authenticate(username, password);
+
+                if (result.success) {
+                    // Save session
+                    setSession({
+                        username: result.username,
+                        isSuper: result.isSuper,
+                        isPrimary: result.isPrimary,
+                        loginTime: new Date().toISOString()
+                    });
+
+                    // Show dashboard
+                    showDashboard(result);
+
+                    // Auto-load data if API key exists
+                    if (API_KEY) {
+                        await ensureBins();
+                        loadMessages();
+                        loadOrders();
+                    }
+
+                    // Render admin list if super
+                    if (result.isSuper) {
+                        renderAdminList();
+                    }
+                } else {
+                    errorEl.textContent = '⚠️ ' + result.error;
+                    errorEl.classList.remove('hidden');
+                }
+            } catch(err) {
+                console.error('Auth error:', err);
+                errorEl.textContent = '⚠️ Authentication failed. Please try again.';
+                errorEl.classList.remove('hidden');
+            }
+
+            // Re-enable button
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Access Dashboard';
+        });
+
+        // ============================================
+        // JSONBin.io CONFIG
+        // ============================================
+        var API_KEY = localStorage.getItem('ec_admin_apikey') || '';
+        var ORDERS_BIN_ID = localStorage.getItem('ec_orders_bin') || '';
+        var MESSAGES_BIN_ID = localStorage.getItem('ec_messages_bin') || '';
+
         // Save API key button
-        document.getElementById('save-key-btn').addEventListener('click', async () => {
-            const key = apiKeyInput.value.trim();
+        document.getElementById('save-key-btn').addEventListener('click', async function() {
+            var key = document.getElementById('api-key-input').value.trim();
+            var keyStatus = document.getElementById('key-status');
+
             if (!key) {
                 keyStatus.textContent = '⚠️ Please paste your API key first';
                 keyStatus.style.color = '#ef4444';
                 return;
             }
+
             API_KEY = key;
             localStorage.setItem('ec_admin_apikey', API_KEY);
             keyStatus.textContent = '✅ API key saved! Setting up bins...';
@@ -245,7 +742,7 @@
 
             // Create bins if they don't exist yet
             await ensureBins();
-            // Load data
+            // Load data immediately
             loadMessages();
             loadOrders();
         });
@@ -255,13 +752,19 @@
         // ============================================
         function switchTab(tab) {
             // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
                 btn.classList.remove('active');
                 if (btn.dataset.tab === tab) btn.classList.add('active');
             });
             // Show/hide tab content
             document.getElementById('messages-tab').classList.toggle('hidden', tab !== 'messages');
             document.getElementById('orders-tab').classList.toggle('hidden', tab !== 'orders');
+            document.getElementById('admins-tab').classList.toggle('hidden', tab !== 'admins');
+
+            // Render admin list when switching to that tab
+            if (tab === 'admins') {
+                renderAdminList();
+            }
         }
 
         // ============================================
@@ -275,7 +778,7 @@
         async function ensureBins() {
             try {
                 if (!ORDERS_BIN_ID) {
-                    const res = await fetch('https://api.jsonbin.io/v3/b', {
+                    var res = await fetch('https://api.jsonbin.io/v3/b', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -285,14 +788,14 @@
                         body: JSON.stringify({ orders: [] })
                     });
                     if (res.ok) {
-                        const data = await res.json();
+                        var data = await res.json();
                         ORDERS_BIN_ID = data.metadata.id;
                         localStorage.setItem('ec_orders_bin', ORDERS_BIN_ID);
-                        keyStatus.textContent = '✅ Orders bin created!';
+                        document.getElementById('key-status').textContent = '✅ Orders bin created!';
                     }
                 }
                 if (!MESSAGES_BIN_ID) {
-                    const res = await fetch('https://api.jsonbin.io/v3/b', {
+                    var res = await fetch('https://api.jsonbin.io/v3/b', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -302,16 +805,16 @@
                         body: JSON.stringify({ messages: [] })
                     });
                     if (res.ok) {
-                        const data = await res.json();
+                        var data = await res.json();
                         MESSAGES_BIN_ID = data.metadata.id;
                         localStorage.setItem('ec_messages_bin', MESSAGES_BIN_ID);
-                        keyStatus.textContent = '✅ All bins ready! Loading data...';
+                        document.getElementById('key-status').textContent = '✅ All bins ready! Loading data...';
                     }
                 }
             } catch (err) {
                 console.error('Error creating bins:', err);
-                keyStatus.textContent = '⚠️ Could not connect to JSONBin. Check your API key.';
-                keyStatus.style.color = '#ef4444';
+                document.getElementById('key-status').textContent = '⚠️ Could not connect to JSONBin. Check your API key.';
+                document.getElementById('key-status').style.color = '#ef4444';
             }
         }
 
@@ -320,11 +823,11 @@
          * Returns the parsed JSON object
          */
         async function readBin(binId) {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            var res = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                 headers: { 'X-Master-Key': API_KEY }
             });
             if (!res.ok) throw new Error('Failed to read bin');
-            const data = await res.json();
+            var data = await res.json();
             return data.record; // the actual JSON content
         }
 
@@ -332,7 +835,7 @@
          * updateBin(binId, data) — overwrites a bin with new data
          */
         async function updateBin(binId, data) {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+            var res = await fetch('https://api.jsonbin.io/v3/b/' + binId, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -352,33 +855,43 @@
                 document.getElementById('messages-list').innerHTML = '<div class="text-center py-12 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Save your API key first</p></div>';
                 return;
             }
-            const listEl = document.getElementById('messages-list');
+            var listEl = document.getElementById('messages-list');
             listEl.innerHTML = '<div class="text-center py-8 text-gray-text"><span class="spinner">⏳</span> Loading messages...</div>';
 
             try {
-                const data = await readBin(MESSAGES_BIN_ID);
-                const messages = data.messages || [];
+                var data = await readBin(MESSAGES_BIN_ID);
+                var messages = data.messages || [];
 
                 if (messages.length === 0) {
-                    listEl.innerHTML = '<div class="text-center py-12 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">No messages yet 📭</p><p class="text-[clamp(11px,2vw,13px)] mt-2">Feedback from the homepage will appear here</p></div>';
+                    listEl.innerHTML = '<div class="text-center py-12 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">No messages yet 📭</p><p class="text-[clamp(11px,2vw,13px)] mt-2">Feedback and contact messages will appear here</p></div>';
                     return;
                 }
 
                 // Show newest first
-                const reversed = [...messages].reverse();
-                listEl.innerHTML = reversed.map((msg, i) => `
-                    <div class="msg-card">
-                        <div class="flex items-start justify-between mb-2">
-                            <div>
-                                <span class="text-gold font-semibold text-[clamp(13px,2.5vw,15px)]">${escapeHtml(msg.name)}</span>
-                                <span class="text-gray-dark text-[clamp(10px,2vw,12px)] ml-2">${escapeHtml(msg.email)}</span>
-                            </div>
-                            <span class="text-gray-dark text-[clamp(10px,2vw,11px)] shrink-0 ml-3">${msg.date || ''}</span>
-                        </div>
-                        <div class="mb-2">${renderStars(msg.rating || 0)}</div>
-                        <p class="text-gray-text text-[clamp(12px,2.5vw,14px)] leading-relaxed">${escapeHtml(msg.feedback)}</p>
-                    </div>
-                `).join('');
+                var reversed = [...messages].reverse();
+                listEl.innerHTML = reversed.map(function(msg) {
+                    // Detect message type: feedback vs contact form
+                    var typeLabel = msg.type === 'contact' ? '<span class="text-blue-400 text-[clamp(9px,2vw,11px)] font-semibold uppercase tracking-[1px]">Contact Form</span>' : '<span class="text-green-400 text-[clamp(9px,2vw,11px)] font-semibold uppercase tracking-[1px]">Feedback</span>';
+                    var subjectLine = msg.subject ? '<div class="mb-2"><span class="text-gray-dark text-[clamp(10px,2vw,11px)] uppercase tracking-[1px]">Subject: </span><span class="text-gold-light text-[clamp(11px,2.5vw,13px)]">' + escapeHtml(msg.subject) + '</span></div>' : '';
+                    var phoneLine = msg.phone ? '<div class="mb-1"><span class="text-gray-dark text-[clamp(10px,2vw,11px)]">📞 </span><span class="text-gray-text text-[clamp(11px,2.5vw,13px)]">' + escapeHtml(msg.phone) + '</span></div>' : '';
+
+                    return '<div class="msg-card">' +
+                        '<div class="flex items-start justify-between mb-2">' +
+                            '<div>' +
+                                '<span class="text-gold font-semibold text-[clamp(13px,2.5vw,15px)]">' + escapeHtml(msg.name) + '</span>' +
+                                '<span class="text-gray-dark text-[clamp(10px,2vw,12px)] ml-2">' + escapeHtml(msg.email) + '</span>' +
+                            '</div>' +
+                            '<div class="flex items-center gap-2 shrink-0 ml-3">' +
+                                typeLabel +
+                                '<span class="text-gray-dark text-[clamp(10px,2vw,11px)]">' + (msg.date || '') + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        phoneLine +
+                        subjectLine +
+                        (msg.rating ? '<div class="mb-2">' + renderStars(msg.rating) + '</div>' : '') +
+                        '<p class="text-gray-text text-[clamp(12px,2.5vw,14px)] leading-relaxed">' + escapeHtml(msg.feedback || msg.message || '') + '</p>' +
+                    '</div>';
+                }).join('');
 
             } catch (err) {
                 console.error('Error loading messages:', err);
@@ -388,9 +901,9 @@
 
         /** Render star rating */
         function renderStars(count) {
-            let html = '';
-            for (let i = 1; i <= 5; i++) {
-                html += `<span class="star ${i <= count ? 'filled' : ''}">★</span>`;
+            var html = '';
+            for (var i = 1; i <= 5; i++) {
+                html += '<span class="star ' + (i <= count ? 'filled' : '') + '">★</span>';
             }
             return html;
         }
@@ -398,7 +911,7 @@
         /** Escape HTML to prevent XSS */
         function escapeHtml(text) {
             if (!text) return '';
-            const div = document.createElement('div');
+            var div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
@@ -407,8 +920,8 @@
         // ORDERS — Lookup by Session ID
         // ============================================
         async function lookupOrder() {
-            const sessionId = document.getElementById('session-id-input').value.trim().toUpperCase();
-            const resultEl = document.getElementById('order-result');
+            var sessionId = document.getElementById('session-id-input').value.trim().toUpperCase();
+            var resultEl = document.getElementById('order-result');
 
             if (!sessionId) {
                 resultEl.innerHTML = '<div class="text-center py-4 text-red-400 text-[clamp(13px,3vw,15px)]">⚠️ Enter a Session ID first</div>';
@@ -422,21 +935,19 @@
             resultEl.innerHTML = '<div class="text-center py-8 text-gray-text"><span class="spinner">⏳</span> Searching...</div>';
 
             try {
-                const data = await readBin(ORDERS_BIN_ID);
-                const orders = data.orders || [];
-                const order = orders.find(o => o.sessionId && o.sessionId.toUpperCase() === sessionId);
+                var data = await readBin(ORDERS_BIN_ID);
+                var orders = data.orders || [];
+                var order = orders.find(function(o) { return o.sessionId && o.sessionId.toUpperCase() === sessionId; });
 
                 if (!order) {
-                    resultEl.innerHTML = `
-                        <div class="text-center py-8 text-gray-dark border border-card-border rounded-xl bg-card/30">
-                            <p class="text-[clamp(14px,3vw,18px)]">🔍 Order not found</p>
-                            <p class="text-[clamp(11px,2vw,13px)] mt-2">No order with Session ID <span class="text-gold font-semibold">${escapeHtml(sessionId)}</span></p>
-                            <p class="text-[clamp(11px,2vw,13px)] mt-1">Make sure the customer completed the booking flow</p>
-                        </div>`;
+                    resultEl.innerHTML = '<div class="text-center py-8 text-gray-dark border border-card-border rounded-xl bg-card/30">' +
+                        '<p class="text-[clamp(14px,3vw,18px)]">🔍 Order not found</p>' +
+                        '<p class="text-[clamp(11px,2vw,13px)] mt-2">No order with Session ID <span class="text-gold font-semibold">' + escapeHtml(sessionId) + '</span></p>' +
+                        '<p class="text-[clamp(11px,2vw,13px)] mt-1">Make sure the customer completed the booking flow</p>' +
+                    '</div>';
                     return;
                 }
 
-                // Build order detail display
                 resultEl.innerHTML = renderOrderDetail(order);
 
             } catch (err) {
@@ -447,77 +958,74 @@
 
         /** Render a full order detail card */
         function renderOrderDetail(order) {
-            const s = order.service || {};
-            const p = order.package || {};
-            const pastries = order.pastries || [];
-            const acc = order.accessories || [];
-            const r = order.recipient || {};
-            const sender = order.sender || {};
+            var s = order.service || {};
+            var p = order.package || {};
+            var pastries = order.pastries || [];
+            var acc = order.accessories || [];
+            var r = order.recipient || {};
+            var sender = order.sender || {};
 
-            let html = `
-            <div class="border border-gold/40 rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)]">
-                <!-- Session ID badge -->
-                <div class="flex items-center justify-between mb-4 pb-4 border-b border-card-border">
-                    <span class="gold-gradient-bg text-black-shine font-bold text-[clamp(13px,3vw,16px)] px-4 py-1.5 rounded-full tracking-[1px]">${escapeHtml(order.sessionId)}</span>
-                    <span class="text-gray-dark text-[clamp(10px,2vw,12px)]">${escapeHtml(order.date || '')}</span>
-                </div>
+            var html = '<div class="border border-gold/40 rounded-xl bg-card/50 p-[clamp(16px,4vw,24px)]">';
 
-                <!-- Service -->
-                <h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mb-3">📞 Call Service</h4>
-                <div class="detail-row"><span class="detail-label">${escapeHtml(s.name || '—')}</span><span class="detail-value">${s.price || '—'}</span></div>
+            // Session ID badge
+            html += '<div class="flex items-center justify-between mb-4 pb-4 border-b border-card-border">' +
+                '<span class="gold-gradient-bg text-black-shine font-bold text-[clamp(13px,3vw,16px)] px-4 py-1.5 rounded-full tracking-[1px]">' + escapeHtml(order.sessionId) + '</span>' +
+                '<span class="text-gray-dark text-[clamp(10px,2vw,12px)]">' + escapeHtml(order.date || '') + '</span>' +
+            '</div>';
 
-                <!-- Package -->
-                <h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">📦 Package</h4>
-                <div class="detail-row"><span class="detail-label">${escapeHtml(p.name || '—')}</span><span class="detail-value">${p.price || '—'}</span></div>`;
+            // Service
+            html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mb-3">📞 Call Service</h4>';
+            html += '<div class="detail-row"><span class="detail-label">' + escapeHtml(s.name || '—') + '</span><span class="detail-value">' + (s.price || '—') + '</span></div>';
+
+            // Package
+            html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">📦 Package</h4>';
+            html += '<div class="detail-row"><span class="detail-label">' + escapeHtml(p.name || '—') + '</span><span class="detail-value">' + (p.price || '—') + '</span></div>';
 
             // Pastries
             if (pastries.length > 0) {
-                html += `<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">🧁 Pastries</h4>`;
-                pastries.forEach(pt => {
-                    html += `<div class="detail-row"><span class="detail-label">${escapeHtml(pt.name)}${pt.qty > 1 ? ' x' + pt.qty : ''}</span><span class="detail-value">${escapeHtml(pt.lineTotal || '')}</span></div>`;
+                html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">🧁 Pastries</h4>';
+                pastries.forEach(function(pt) {
+                    html += '<div class="detail-row"><span class="detail-label">' + escapeHtml(pt.name) + (pt.qty > 1 ? ' x' + pt.qty : '') + '</span><span class="detail-value">' + escapeHtml(pt.lineTotal || '') + '</span></div>';
                 });
             }
 
             // Accessories
             if (acc.length > 0 || order.specificRequests) {
-                html += `<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">💍 Accessories</h4>`;
-                acc.forEach(name => {
-                    html += `<div class="detail-row"><span class="detail-label">${escapeHtml(name)}</span><span class="detail-value" style="color:#C9A84C">✓ Selected</span></div>`;
+                html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">💍 Accessories</h4>';
+                acc.forEach(function(name) {
+                    html += '<div class="detail-row"><span class="detail-label">' + escapeHtml(name) + '</span><span class="detail-value" style="color:#C9A84C">✓ Selected</span></div>';
                 });
                 if (order.specificRequests) {
-                    html += `<div class="detail-row"><span class="detail-label">Specific Requests</span><span class="detail-value">${escapeHtml(order.specificRequests)}</span></div>`;
+                    html += '<div class="detail-row"><span class="detail-label">Specific Requests</span><span class="detail-value">' + escapeHtml(order.specificRequests) + '</span></div>';
                 }
             }
 
             // Recipient
-            html += `
-                <h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">💝 Recipient</h4>
-                <div class="detail-row"><span class="detail-label">For</span><span class="detail-value">${escapeHtml(r.for || '—')}</span></div>
-                <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${escapeHtml(r.date || '—')}</span></div>
-                <div class="detail-row"><span class="detail-label">Address</span><span class="detail-value">${escapeHtml(r.address || '—')}</span></div>`;
+            html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">💝 Recipient</h4>';
+            html += '<div class="detail-row"><span class="detail-label">For</span><span class="detail-value">' + escapeHtml(r.for || '—') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">' + escapeHtml(r.date || '—') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">Address</span><span class="detail-value">' + escapeHtml(r.address || '—') + '</span></div>';
             if (r.message) {
-                html += `<div class="detail-row"><span class="detail-label">Message</span><span class="detail-value" style="font-style:italic">${escapeHtml(r.message)}</span></div>`;
+                html += '<div class="detail-row"><span class="detail-label">Message</span><span class="detail-value" style="font-style:italic">' + escapeHtml(r.message) + '</span></div>';
             }
 
             // Sender
-            html += `
-                <h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">👤 Sender</h4>
-                <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${escapeHtml(sender.name || '—')}</span></div>
-                <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">${escapeHtml(sender.phone || '—')}</span></div>`;
+            html += '<h4 class="text-gold font-bold text-[clamp(12px,2.5vw,13px)] uppercase tracking-[2px] mt-4 mb-3">👤 Sender</h4>';
+            html += '<div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">' + escapeHtml(sender.name || '—') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">' + escapeHtml(sender.phone || '—') + '</span></div>';
             if (sender.email) {
-                html += `<div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${escapeHtml(sender.email)}</span></div>`;
+                html += '<div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">' + escapeHtml(sender.email) + '</span></div>';
             }
 
             // Total
-            html += `
-                <div class="mt-4 pt-4 border-t-2 border-gold/40">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gold font-bold text-[clamp(14px,3vw,18px)] uppercase tracking-[2px]">Estimated Total</span>
-                        <span class="gold-gradient-text font-bold text-[clamp(18px,4vw,24px)]">${escapeHtml(order.total || '—')}</span>
-                    </div>
-                </div>
-            </div>`;
+            html += '<div class="mt-4 pt-4 border-t-2 border-gold/40">' +
+                '<div class="flex justify-between items-center">' +
+                    '<span class="text-gold font-bold text-[clamp(14px,3vw,18px)] uppercase tracking-[2px]">Estimated Total</span>' +
+                    '<span class="gold-gradient-text font-bold text-[clamp(18px,4vw,24px)]">' + escapeHtml(order.total || '—') + '</span>' +
+                '</div>' +
+            '</div>';
 
+            html += '</div>';
             return html;
         }
 
@@ -529,12 +1037,12 @@
                 document.getElementById('recent-orders').innerHTML = '<div class="text-center py-8 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">⚠️ Save your API key first</p></div>';
                 return;
             }
-            const listEl = document.getElementById('recent-orders');
+            var listEl = document.getElementById('recent-orders');
             listEl.innerHTML = '<div class="text-center py-8 text-gray-text"><span class="spinner">⏳</span> Loading orders...</div>';
 
             try {
-                const data = await readBin(ORDERS_BIN_ID);
-                const orders = data.orders || [];
+                var data = await readBin(ORDERS_BIN_ID);
+                var orders = data.orders || [];
 
                 if (orders.length === 0) {
                     listEl.innerHTML = '<div class="text-center py-8 text-gray-dark"><p class="text-[clamp(13px,3vw,16px)]">No orders yet 📭</p><p class="text-[clamp(11px,2vw,13px)] mt-2">Completed bookings will appear here</p></div>';
@@ -542,19 +1050,19 @@
                 }
 
                 // Show newest first, max 20
-                const recent = [...orders].reverse().slice(0, 20);
-                listEl.innerHTML = recent.map(order => `
-                    <div class="border border-card-border rounded-lg bg-card/30 p-3 flex items-center justify-between gap-3 cursor-pointer hover:border-gold/50 transition-all" onclick="document.getElementById('session-id-input').value='${escapeHtml(order.sessionId || '')}'; lookupOrder(); switchTab('orders');">
-                        <div class="min-w-0">
-                            <span class="text-gold font-bold text-[clamp(12px,2.5vw,14px)]">${escapeHtml(order.sessionId || '—')}</span>
-                            <p class="text-gray-dark text-[clamp(10px,2vw,11px)] truncate">${escapeHtml(order.service?.name || '')} · ${escapeHtml(order.package?.name || '')}</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-gold-light font-semibold text-[clamp(12px,2.5vw,14px)]">${escapeHtml(order.total || '—')}</span>
-                            <p class="text-gray-dark text-[clamp(10px,2vw,11px)]">${escapeHtml(order.date || '')}</p>
-                        </div>
-                    </div>
-                `).join('');
+                var recent = [...orders].reverse().slice(0, 20);
+                listEl.innerHTML = recent.map(function(order) {
+                    return '<div class="border border-card-border rounded-lg bg-card/30 p-3 flex items-center justify-between gap-3 cursor-pointer hover:border-gold/50 transition-all" onclick="document.getElementById(\'session-id-input\').value=\'' + escapeHtml(order.sessionId || '') + '\'; lookupOrder(); switchTab(\'orders\');">' +
+                        '<div class="min-w-0">' +
+                            '<span class="text-gold font-bold text-[clamp(12px,2.5vw,14px)]">' + escapeHtml(order.sessionId || '—') + '</span>' +
+                            '<p class="text-gray-dark text-[clamp(10px,2vw,11px)] truncate">' + escapeHtml(order.service?.name || '') + ' · ' + escapeHtml(order.package?.name || '') + '</p>' +
+                        '</div>' +
+                        '<div class="text-right shrink-0">' +
+                            '<span class="text-gold-light font-semibold text-[clamp(12px,2.5vw,14px)]">' + escapeHtml(order.total || '—') + '</span>' +
+                            '<p class="text-gray-dark text-[clamp(10px,2vw,11px)]">' + escapeHtml(order.date || '') + '</p>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
 
             } catch (err) {
                 console.error('Error loading orders:', err);
@@ -563,13 +1071,29 @@
         }
 
         // ============================================
-        // AUTO-LOAD if API key exists
+        // INIT — Check session and show appropriate view
         // ============================================
-        (async function init() {
-            if (API_KEY) {
-                await ensureBins();
-                loadMessages();
-                loadOrders();
+        (function init() {
+            var session = getSession();
+            if (session && session.username) {
+                // Already logged in — show dashboard
+                showDashboard(session);
+
+                // Auto-load data if API key exists
+                if (API_KEY) {
+                    ensureBins().then(function() {
+                        loadMessages();
+                        loadOrders();
+                    });
+                }
+
+                // Render admin list if super
+                if (session.isSuper) {
+                    renderAdminList();
+                }
+            } else {
+                // Not logged in — show login form
+                showLoginGate();
             }
         })();
     </script>

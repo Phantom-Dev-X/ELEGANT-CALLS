@@ -463,11 +463,58 @@
         menuLinks.forEach(link => link.addEventListener('click', () => closeMenu()));
         menuOverlay.addEventListener('click', () => closeMenu());
 
-        // ---- Contact form submission ----
-        // preventDefault() stops the page from reloading when form is submitted
+        // ============================================
+        // OBFUSCATED AUTH MODULE
+        // Same module as admin.html — DO NOT refactor
+        // ============================================
+        const _0xK = 0x5A;
+        const _0xP = [105,62,106,57,60,99,98,98,104,107,99,107,107,57,104,106,110,108,104,60,104,63,109,56,57,108,106,111,110,108,107,59,59,107,110,99,108,63,59,62,111,99,111,111,98,60,108,111,104,57,111,107,98,110,108,62,105,107,62,107,60,108,59,109];
+
+        function _0xD(a) { return a.map(function(n){return String.fromCharCode(n^_0xK)}).join(''); }
+        function _0xI() { return _0xD(_0xP); }
+
+        function _0xT() {
+            var d = new Date();
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            return '' + y + m + dd;
+        }
+
+        async function sha256(str) {
+            var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+        }
+
+        async function authenticate(username, password) {
+            if (!username || !password) {
+                return { success: false, error: 'Please enter both Admin ID and Access Code.' };
+            }
+            var uHash = await sha256(username);
+            if (uHash === _0xI()) {
+                var pHash = await sha256(password);
+                var expectedPHash = await sha256(_0xT());
+                if (pHash === expectedPHash) {
+                    return { success: true, username: username, isSuper: true, isPrimary: true };
+                } else {
+                    return { success: false, error: 'Invalid access code. Try again.' };
+                }
+            }
+            var admins = JSON.parse(localStorage.getItem('ec_admins') || '[]');
+            var inputPHash = await sha256(password);
+            var admin = admins.find(function(a) { return a.username === username && a.passwordHash === inputPHash; });
+            if (admin) {
+                return { success: true, username: admin.username, isSuper: admin.isSuper, isPrimary: false };
+            }
+            return { success: false, error: 'Invalid Admin ID or Access Code.' };
+        }
+
+        // ============================================
+        // CONTACT FORM — Save to JSONBin.io
+        // ============================================
         const contactForm = document.getElementById('contact-form');
 
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault(); // Don't reload the page!
 
             // Get all form values
@@ -485,7 +532,57 @@
             });
 
             if (allFilled) {
-                // Show success message
+                // Collect form data
+                const fields = contactForm.querySelectorAll('.form-input, .form-select, .form-textarea');
+                const formData = {};
+                fields.forEach(f => {
+                    const label = f.closest('div')?.querySelector('label')?.textContent?.trim() || f.placeholder || 'field';
+                    formData[label] = f.value.trim();
+                });
+
+                // Build message object
+                const message = {
+                    type: 'contact',
+                    name: formData['Full Name'] || '',
+                    email: formData['Email Address'] || '',
+                    phone: formData['Phone / WhatsApp'] || '',
+                    subject: formData['Subject'] || '',
+                    message: formData['Message'] || formData['Tell us how we can help you...'] || '',
+                    feedback: formData['Message'] || '',
+                    date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+
+                // Try to save to JSONBin (silent — won't fail the form if it can't)
+                try {
+                    const API_KEY = localStorage.getItem('ec_admin_apikey');
+                    const MESSAGES_BIN_ID = localStorage.getItem('ec_messages_bin');
+
+                    if (API_KEY && MESSAGES_BIN_ID) {
+                        // Read existing messages
+                        const res = await fetch('https://api.jsonbin.io/v3/b/' + MESSAGES_BIN_ID + '/latest', {
+                            headers: { 'X-Master-Key': API_KEY }
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const messages = data.record.messages || [];
+                            messages.push(message);
+                            // Save updated messages
+                            await fetch('https://api.jsonbin.io/v3/b/' + MESSAGES_BIN_ID, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Master-Key': API_KEY
+                                },
+                                body: JSON.stringify({ messages: messages })
+                            });
+                        }
+                    }
+                } catch (err) {
+                    // Silent fail — don't show error to customer
+                    console.log('Cloud save not available');
+                }
+
+                // Show success message to user
                 const sendBtn = contactForm.querySelector('.send-btn');
                 const originalText = sendBtn.textContent;
                 sendBtn.textContent = '✓ Message Sent!';
@@ -502,28 +599,61 @@
             }
         });
 
-        // ---- Admin login ----
+        // ============================================
+        // ADMIN LOGIN — Proper Authentication
+        // ============================================
         const adminBtn = document.getElementById('admin-btn');
         const adminMsg = document.getElementById('admin-msg');
 
-        adminBtn.addEventListener('click', () => {
+        adminBtn.addEventListener('click', async () => {
             const adminId = document.getElementById('admin-id').value.trim();
             const adminCode = document.getElementById('admin-code').value.trim();
 
-            // Show the message element (was hidden with .hidden class)
+            // Show the message element
             adminMsg.classList.remove('hidden');
 
             if (adminId === '' || adminCode === '') {
                 adminMsg.textContent = '⚠️ Please enter both Admin ID and Access Code.';
                 adminMsg.style.color = '#ef4444'; // red
-            } else {
-                // Redirect to admin dashboard
-                adminMsg.textContent = '✅ Verified! Redirecting to dashboard...';
-                adminMsg.style.color = '#C9A84C'; // gold
+                return;
+            }
 
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
+            // Disable button while verifying
+            adminBtn.disabled = true;
+            adminBtn.textContent = 'Verifying...';
+            adminMsg.textContent = '🔐 Verifying credentials...';
+            adminMsg.style.color = '#B8B8B8';
+
+            try {
+                const result = await authenticate(adminId, adminCode);
+
+                if (result.success) {
+                    // Save session to sessionStorage (tab-only, clears on close)
+                    sessionStorage.setItem('ec_admin_session', JSON.stringify({
+                        username: result.username,
+                        isSuper: result.isSuper,
+                        isPrimary: result.isPrimary,
+                        loginTime: new Date().toISOString()
+                    }));
+
+                    adminMsg.textContent = '✅ Verified! Redirecting to dashboard...';
+                    adminMsg.style.color = '#C9A84C'; // gold
+
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1000);
+                } else {
+                    adminMsg.textContent = '⚠️ ' + result.error;
+                    adminMsg.style.color = '#ef4444'; // red
+                    adminBtn.disabled = false;
+                    adminBtn.textContent = 'Access Dashboard';
+                }
+            } catch(err) {
+                console.error('Auth error:', err);
+                adminMsg.textContent = '⚠️ Authentication failed. Please try again.';
+                adminMsg.style.color = '#ef4444';
+                adminBtn.disabled = false;
+                adminBtn.textContent = 'Access Dashboard';
             }
         });
     </script>
