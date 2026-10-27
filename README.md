@@ -160,12 +160,6 @@ This project taught me:
 
 ---
 
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
 <p align="center"><strong>💛 Built with passion by a beginner who refuses to give up</strong></p>
 
 <p align="center"><em>If you're an employer reading this — I'm eager to learn, ready to work, and not afraid of a challenge. Let's build something great together.</em></p>
