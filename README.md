@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-<a href="https://elegant-calls-site.surge.sh">🌐 Live Demo</a> · <a href="https://wa.me/2349029675308">📱 WhatsApp</a> · <a href="https://www.tiktok.com/@phanantomdev">🎵 TikTok</a>
+<a href="https://phantom-dev-x.github.io/ELEGANT-CALLS/">🌐 Live Demo</a> · <a href="https://wa.me/2349029675308">📱 WhatsApp</a> · <a href="https://www.tiktok.com/@phanantomdev">🎵 TikTok</a>
 </p>
 
 ---
